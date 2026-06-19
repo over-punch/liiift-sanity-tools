@@ -1,0 +1,48 @@
+%% Liiift Sanity Tools — ecosystem overview
+%% Source for assets/ecosystem.svg. Regenerate with: npm run assets
+graph TD
+    studio["Sanity Studio v3 / v4 / v5"]
+
+    subgraph data["Data operations"]
+        bulk["bulk-data-operations"]
+        export["export-data"]
+        search["search-and-delete"]
+        assets["delete-unused-assets"]
+        refs["convert-references"]
+        slugs["convert-ids-to-slugs"]
+        dup["duplicate-and-rename"]
+    end
+
+    subgraph inputs["Studio inputs & UI"]
+        refarray["advanced-reference-array"]
+        keyval["key-value-input"]
+        nested["nested-object-selector"]
+        badge["studio-version-badge"]
+    end
+
+    subgraph foundry["Type-foundry domain"]
+        fontmgr["sanity-font-manager"]
+        fontextract["font-data-extractor"]
+        utils["type-foundry-utilities"]
+        tfields["typeface-fields"]
+        tseo["typeface-seo"]
+        consts["foundry-constants"]
+    end
+
+    subgraph ops["Commerce & ops"]
+        sales["sales-portal"]
+        renewals["renewals-authorization"]
+        order["order-schema"]
+        deploy["deploy-vercel-from-sanity"]
+    end
+
+    studio --> data
+    studio --> inputs
+    studio --> foundry
+    studio --> ops
+
+    teststudio["test-studio (shared dev harness)"] -.mounts every plugin.-> studio
+
+    classDef group fill:#f7f7f8,stroke:#d0d0d6,color:#1a1a1a;
+    classDef root fill:#111,stroke:#111,color:#fff;
+    class studio root;

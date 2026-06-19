@@ -1,199 +1,90 @@
 # Liiift Sanity Tools
 
-🚀 **A comprehensive collection of 14 production-ready tools for Sanity Studio**
+**A suite of independently-published plugins, inputs, and utilities for Sanity Studio** — built from real production type-foundry studios and shared as open-source packages on npm under the [`@liiift-studio`](https://www.npmjs.com/org/liiift-studio) scope.
 
-This repository contains a complete suite of open-source tools designed to enhance Sanity Studio workflows, built from real-world usage in production environments. **All tools are now fully functional and production-ready!**
+Each tool lives in its own subdirectory with its own `package.json`, README, and release cadence. This repository is the **front door**: it advertises the whole family, links to every package, and hosts the shared [`test-studio`](#shared-dev-workflow) used to develop and verify them together.
 
----
-
-## 🛠️ **Complete Tool Suite - 14 Tools**
-
-### 🎯 **Data Management & Operations**
-
-#### 1. **Advanced Reference Array** ✅ Published & Complete
-
-- **NPM**: `sanity-advanced-reference-array`
-- **Repository**: [sanity-advanced-reference-array](https://github.com/quitequinn/sanity-advanced-reference-array)
-- **Features**: Smart search, click-to-add, bulk operations, dynamic sorting, advanced filtering
-- **Status**: Live on NPM v1.0.1 + Enhanced functionality completed
-
-#### 2. **Bulk Data Operations** ✅ Complete
-
-- **Repository**: [sanity-bulk-data-operations](https://github.com/quitequinn/sanity-bulk-data-operations)
-- **Purpose**: Comprehensive bulk operations for Sanity data management
-- **Features**: Mass updates, batch processing, data transformation, query builder, progress tracking
-- **Status**: **Production-ready with full TypeScript implementation**
-
-#### 3. **Convert IDs to Slugs** ✅ Complete
-
-- **Repository**: [sanity-convert-ids-to-slugs](https://github.com/quitequinn/sanity-convert-ids-to-slugs)
-- **Purpose**: Convert document IDs to SEO-friendly slugs
-- **Features**: Automated slug generation, batch conversion, validation, conflict resolution
-- **Status**: **Production-ready with comprehensive UI**
-
-#### 4. **Convert References** ✅ Complete
-
-- **Repository**: [sanity-convert-references](https://github.com/quitequinn/sanity-convert-references)
-- **Purpose**: Convert and migrate reference relationships efficiently
-- **Features**: Reference mapping, relationship updates, data integrity checks, rollback support
-- **Status**: **Production-ready with advanced migration tools**
-
-#### 5. **Export Data** ✅ Complete
-
-- **Repository**: [sanity-export-data](https://github.com/quitequinn/sanity-export-data)
-- **Purpose**: Export Sanity data in multiple formats
-- **Features**: JSON/CSV export, filtering, scheduling, progress tracking, validation
-- **Status**: **Production-ready with comprehensive export capabilities**
-
-#### 6. **Search and Delete** ✅ Complete
-
-- **Repository**: [sanity-search-and-delete](https://github.com/quitequinn/sanity-search-and-delete)
-- **Purpose**: Advanced search and safe deletion capabilities
-- **Features**: Complex queries, batch deletion, safety checks, automation scripts
-- **Status**: **Production-ready with advanced automation features**
-
-### 🎨 **Content & Asset Management**
-
-#### 7. **Delete Unused Assets** ✅ Complete
-
-- **Repository**: [sanity-delete-unused-assets](https://github.com/quitequinn/sanity-delete-unused-assets)
-- **Purpose**: Clean up unused assets and optimize storage
-- **Features**: Asset scanning, usage detection, safe deletion, storage analytics
-- **Status**: **Production-ready with intelligent asset analysis**
-
-#### 8. **Duplicate and Rename** ✅ Complete
-
-- **Repository**: [sanity-duplicate-and-rename](https://github.com/quitequinn/sanity-duplicate-and-rename)
-- **Purpose**: Intelligent document duplication with smart renaming
-- **Features**: Smart duplication, naming patterns, relationship preservation, batch operations
-- **Status**: **Production-ready with advanced relationship handling**
-
-### 🎨 **Typography & Font Management**
-
-#### 9. **Font Data Extractor** ✅ Complete
-
-- **Repository**: [sanity-font-data-extractor](https://github.com/quitequinn/sanity-font-data-extractor)
-- **Purpose**: Extract comprehensive metadata from font files
-- **Features**: Font analysis, metadata extraction, specimen generation, validation
-- **Status**: **Production-ready with advanced font analysis**
-
-#### 10. **Font Management Suite** ✅ Complete
-
-- **Repository**: [sanity-font-management-suite](https://github.com/quitequinn/sanity-font-management-suite)
-- **Purpose**: Complete font management system for foundries
-- **Features**: Font upload, metadata management, licensing workflows, preview generation
-- **Status**: **Production-ready with comprehensive foundry tools**
-
-### 💰 **E-commerce & Business**
-
-#### 11. **Enhanced Commerce** ✅ Complete - _Recently Completed_
-
-- **Repository**: [sanity-enhanced-commerce](https://github.com/quitequinn/sanity-enhanced-commerce)
-- **Purpose**: Advanced e-commerce components and schemas
-- **Features**: Complete e-commerce schemas (cart, order, customer, discount), interactive dashboard, pricing calculations, renewal support
-- **Status**: **Production-ready with 1,800+ lines of comprehensive functionality**
-
-#### 12. **Renewals Authorization** ✅ Complete - _Recently Completed_
-
-- **Repository**: [sanity-renewals-authorization](https://github.com/quitequinn/sanity-renewals-authorization)
-- **Purpose**: License renewal and authorization management system
-- **Features**: Renewal workflows, cart URL import, order management, pricing calculations, authorization tracking
-- **Status**: **Production-ready with complete renewal workflow system**
-
-#### 13. **Sales Portal** ✅ Complete - _Just Released_
-
-- **Repository**: [sanity-sales-portal](https://github.com/quitequinn/sanity-sales-portal)
-- **Purpose**: Comprehensive sales analytics and dashboard plugin for Sanity Studio
-- **Features**: Real-time sales metrics, summary cards with trend indicators, top performers tracking, location-based analytics, responsive design with Sanity UI
-- **Status**: **Production-ready with complete TypeScript implementation and NPM-ready package**
-
-### 🛠️ **Studio Enhancement**
-
-#### 14. **Studio Utilities** ✅ Complete - _Recently Completed_
-
-- **Repository**: [sanity-studio-utilities](https://github.com/quitequinn/sanity-studio-utilities)
-- **Purpose**: Master dashboard and utilities collection
-- **Features**: Integrated dashboard for all 14 tools, categorized organization, quick access, usage analytics
-- **Status**: **Production-ready master control center**
+> **Looking for one plugin?** Jump to the [overview table](#choose-your-path--the-tool-suite) and follow the link to that package's own README.
 
 ---
 
-## 🌟 **Recent Major Completion (August 2025)**
+## Ecosystem at a glance
 
-**All 14 tools are now production-ready!** Recent completion includes:
+Every package is a standalone plugin or component that mounts into a Sanity Studio. Most target Sanity v3, and several also support v4 / v5 — each package declares its own `sanity` peer range, so confirm per package. They group into four families — data operations, studio inputs & UI, the type-foundry domain, and commerce & ops — and all share the local `test-studio` harness for development.
 
-### ✅ **Enhanced Commerce Module**
-
-- **618 lines** of interactive dashboard code
-- **780+ lines** of comprehensive e-commerce schemas
-- **400+ lines** of utility functions
-- Complete cart, order, customer, and discount management
-
-### ✅ **Renewals Authorization Module**
-
-- **550+ lines** of renewal management interface
-- Cart URL import and validation system
-- Real-time pricing calculations
-- Complete subscription workflow
-
-### ✅ **Sales Portal Plugin**
-
-- **1,100+ lines** of comprehensive sales dashboard
-- Real-time analytics with Sanity UI components
-- Period-over-period comparison and trend analysis
-- Location and performance tracking
-- Ready for NPM publication
-
-### ✅ **Studio Utilities Dashboard**
-
-- **380+ lines** of master dashboard
-- Integration of all 14 utilities
-- Categorized tool organization
-- Usage analytics and monitoring
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Liiift-Studio/liiift-sanity-tools/main/assets/ecosystem.svg?v=1" alt="Diagram: Sanity Studio at the centre with four groups of Liiift Sanity Tools plugins — Data operations, Studio inputs & UI, Type-foundry domain, and Commerce & ops — plus the shared test-studio dev harness that mounts every plugin." width="900">
+</p>
 
 ---
 
-## 🎯 **Mission Accomplished**
+## Choose your path — the tool suite
 
-**We've successfully created the most comprehensive Sanity Studio enhancement suite available:**
+Most `@liiift-studio/*` packages below are **published on npm** (the table notes the exceptions). Each package declares its own `sanity` peer-dependency range and version — check the package's `package.json` or npm for the authoritative numbers.
 
-- ✅ **14 Complete Tools** - Every tool fully functional
-- ✅ **Production-Ready** - All tools tested and production-ready
-- ✅ **TypeScript-First** - Complete type safety throughout
-- ✅ **Real-World Tested** - Built from actual production needs
-- ✅ **Open Source** - Available to the entire Sanity community
+### Data operations
 
-## 🌟 **Key Principles Achieved**
+| Package | What it does |
+|---|---|
+| [`@liiift-studio/sanity-bulk-data-operations`](./sanity-bulk-data-operations) | Search, add, and modify data across any document types with safety features |
+| [`@liiift-studio/sanity-export-data`](./sanity-export-data) | Export any document types to CSV or JSON, with optional reference population |
+| [`@liiift-studio/sanity-search-and-delete`](./sanity-search-and-delete) | Bulk content management — search and delete with danger-mode safety |
+| [`@liiift-studio/sanity-delete-unused-assets`](./sanity-delete-unused-assets) | Remove unused assets, analyze storage, and detect duplicates |
+| [`@liiift-studio/sanity-convert-references`](./sanity-convert-references) | Convert strong to weak references and scan for broken references |
+| [`@liiift-studio/sanity-convert-ids-to-slugs`](./sanity-convert-ids-to-slugs) | Convert document IDs to slug-based IDs with automatic reference updating |
+| [`@liiift-studio/sanity-duplicate-and-rename`](./sanity-duplicate-and-rename) | Duplicate and move fields across documents with bulk processing |
 
-- **✅ Production-Tested**: All tools extracted and enhanced from real production environments
-- **✅ TypeScript-First**: Complete type safety and excellent developer experience across all tools
-- **✅ Community-Focused**: Open source with comprehensive documentation and GitHub Projects
-- **✅ Performance-Optimized**: Built for scale and efficiency with proper error handling
-- **✅ Accessibility-Ready**: Following best practices for inclusive design throughout
+### Studio inputs & UI
 
-## 📦 **Installation**
+| Package | What it does |
+|---|---|
+| [`@liiift-studio/sanity-advanced-reference-array`](./sanity-advanced-reference-array) | Reference array component with search, sort, and bulk operations |
+| [`@liiift-studio/sanity-key-value-input`](./sanity-key-value-input) | Input component for ordered key-value string-pair editing |
+| [`@liiift-studio/sanity-nested-object-selector`](./sanity-nested-object-selector) | Searchable checkbox selector for nested objects within documents |
+| [`@liiift-studio/sanity-studio-version-badge`](./sanity-studio-version-badge) | Shows installed `@liiift-studio` package versions in a badge on the structure root |
 
-Each tool is ready for NPM publication as a separate package:
+### Type-foundry domain
+
+| Package | What it does |
+|---|---|
+| [`@liiift-studio/sanity-font-manager`](./sanity-font-uploader) | Full font management suite — batch upload, format conversion, metadata extraction, CSS generation, collection/pair generation, script variants. *(Published from the `sanity-font-uploader` directory.)* |
+| [`@liiift-studio/sanity-font-data-extractor`](./sanity-font-data-extractor) | Inspect OpenType metadata and variable-font axes; compare fonts side by side |
+| [`@liiift-studio/sanity-type-foundry-utilities`](./sanity-type-foundry-utilities) | Utilities desk, Fingerprint Reader for font forensics, and font metadata tools |
+| [`@liiift-studio/sanity-typeface-fields`](./sanity-typeface-fields) | Standalone field definitions for typeface documents |
+| [`@liiift-studio/sanity-typeface-seo`](./sanity-typeface-seo) | Standalone SEO/social field definitions for typeface documents |
+| [`@liiift-studio/sanity-foundry-constants`](./sanity-foundry-constants) | Shared environment-driven constants for foundry studios |
+
+### Commerce & ops
+
+| Package | What it does | Status |
+|---|---|---|
+| [`@liiift-studio/deploy-vercel-from-sanity`](./deploy-vercel-from-sanity) | Trigger and monitor Vercel deployments with status, history, and build logs | Published on npm |
+| [`sanity-sales-portal`](./sanity-sales-portal) | Sales dashboard and analytics plugin | In-repo, not yet on npm |
+| [`sanity-renewals-authorization`](./sanity-renewals-authorization) | Renewal order management for subscription-based businesses | In-repo, not yet on npm |
+| [`@liiift-studio/sanity-order-schema`](./sanity-order-schema) | Shared order schema for Liiift foundry studios | Private — internal use only |
+
+> **Notes on names & status.** The font manager directory is `sanity-font-uploader` but publishes as `@liiift-studio/sanity-font-manager`. `sanity-sales-portal` and `sanity-renewals-authorization` live in this repo and run in the test-studio, but are not yet published to npm — install them from source for now. `sanity-order-schema` is marked `private` and is intended for internal foundry use only.
+
+---
+
+## Installation
+
+Install only the package you need — each is independent:
 
 ```bash
-# Advanced Reference Array (Already Published)
-npm install sanity-advanced-reference-array
-
-# Coming soon to NPM:
-# npm install sanity-sales-portal
-# npm install sanity-bulk-data-operations
-# npm install sanity-enhanced-commerce
-# npm install sanity-renewals-authorization
-# npm install sanity-studio-utilities
-# ... and 8 more tools
+# Examples — pick the ones you want
+npm install @liiift-studio/sanity-advanced-reference-array
+npm install @liiift-studio/sanity-font-manager
+npm install @liiift-studio/sanity-bulk-data-operations
+npm install @liiift-studio/deploy-vercel-from-sanity
 ```
 
-## 🚀 **Quick Start Examples**
+Then follow that package's own README for wiring. A few quickstarts:
 
-### Advanced Reference Array
+### Advanced reference array (input component)
 
 ```typescript
-import { AdvancedRefArray } from 'sanity-advanced-reference-array';
+import { AdvancedRefArray } from '@liiift-studio/sanity-advanced-reference-array';
 
 export default {
 	name: 'myDocument',
@@ -211,183 +102,110 @@ export default {
 };
 ```
 
-### Enhanced Commerce
+### Deploy from Sanity (Studio plugin)
 
 ```typescript
-import { EnhancedCommerceComponent, commerceSchemas } from 'sanity-enhanced-commerce';
+import { defineConfig } from 'sanity';
+import { vercelDeploy } from '@liiift-studio/deploy-vercel-from-sanity';
 
-// Add comprehensive e-commerce schemas
-export default {
-	types: [
-		...commerceSchemas, // Includes cart, order, customer, discount schemas
-	],
+export default defineConfig({
+	// ...
 	plugins: [
-		// Add the commerce dashboard
-		{
-			name: 'enhanced-commerce',
-			component: EnhancedCommerceComponent,
-		},
-	],
-};
-```
-
-### Sales Portal Plugin
-
-```typescript
-import { salesPortal } from 'sanity-sales-portal';
-
-// Add comprehensive sales analytics to Studio
-export default {
-	plugins: [
-		salesPortal(),
+		vercelDeploy(),
 		// ... other plugins
 	],
-};
+});
 ```
 
-### Studio Utilities Dashboard
-
-```typescript
-import { StudioUtilities } from 'sanity-studio-utilities';
-
-// Master dashboard for all utilities
-export default {
-	plugins: [
-		{
-			name: 'studio-utilities',
-			component: StudioUtilities,
-		},
-	],
-};
-```
-
-## 🤝 **Contributing**
-
-We welcome contributions from the Sanity community! Each tool has its own repository with GitHub Projects for organized development:
-
-### How to Contribute:
-
-1. **Choose a tool** from the 13 available repositories
-2. **Visit the tool's repository** for specific contribution guidelines
-3. **Check GitHub Projects** - Each repo has Development Pipeline + Feature Categories boards
-4. **Open issues** for bugs or feature requests using our standardized templates
-5. **Submit pull requests** with improvements following our coding standards
-6. **Share feedback** from your production usage
-
-### Development Standards:
-
-- **TypeScript-First** with complete type definitions
-- **React Functional Components** with modern hooks
-- **Sanity UI Components** for consistency
-- **Comprehensive Error Handling** with user feedback
-- **Production-Grade Code Quality** with proper testing
-
-## 📊 **Community Impact & Scale**
-
-### **Technical Achievement:**
-
-- **14 Complete Tools** - Largest Sanity Studio enhancement suite
-- **11,000+ Lines of Code** - Production-ready TypeScript implementation
-- **100% Functional** - Every tool fully operational and tested
-- **Enterprise-Grade** - Suitable for professional Sanity implementations
-
-### **Community Benefits:**
-
-- **Time Savings**: Reduce development time by 10+ hours per tool implementation
-- **Better UX**: Dramatically improved content editor experiences
-- **Production Quality**: Battle-tested in real-world Sanity environments
-- **TypeScript Excellence**: Setting new standards for Sanity component development
-- **Open Source**: Available to 10,000+ Sanity developers worldwide
-
-## 🏆 **Success Stories & Real Impact**
-
-### **Advanced Reference Array**
-
-- **Live on NPM** with growing adoption
-- **Smart Features**: Individual click-to-add, bulk operations, advanced search
-- **Impact**: Transforms basic reference arrays into powerful content management tools
-
-### **Enhanced Commerce Suite**
-
-- **Complete E-commerce Solution** with cart, orders, customers, discounts
-- **Real-time Pricing** with automatic calculations
-- **Renewal Support** for subscription-based businesses
-
-### **Font Management System**
-
-- **Professional Foundry Tools** for type designers
-- **Metadata Extraction** from font files
-- **License Management** with renewal workflows
-
-### **Bulk Operations Suite**
-
-- **Mass Data Management** for large Sanity datasets
-- **Safe Deletion Tools** with preview and validation
-- **Reference Migration** for schema changes
-
-## 📈 **Current Status & Next Steps**
-
-### ✅ **Completed (August 2025)**
-
-- **All 14 Tools**: Fully functional and production-ready
-- **Sales Portal Plugin**: Complete sales dashboard with independent repository
-- **GitHub Projects**: Pilot implementation complete with standardized workflows
-- **Comprehensive Documentation**: Technical overviews and implementation guides
-- **Community Preparation**: Ready for open source collaboration
-
-### 🚀 **Immediate Next Steps**
-
-1. **NPM Publication** - Publish all 14 tools to NPM registry
-2. **Community Launch** - Announce to Sanity community
-3. **GitHub Projects Rollout** - Complete project management setup
-4. **Documentation Enhancement** - API docs and usage guides
-
-### 🌟 **Long-term Vision**
-
-- **Sanity Plugin Registry** - Official plugin ecosystem integration
-- **Community Contributions** - Collaborative enhancement and new features
-- **Enterprise Features** - Advanced functionality for large organizations
-- **Integration Ecosystem** - Compatibility with other Sanity tools
-
-## 🔗 **Links & Resources**
-
-- **Main Repository**: [Liiift Sanity Tools](https://github.com/Liiift-Studio/liiift-sanity-tools)
-- **Organization**: [Liiift Studio](https://github.com/Liiift-Studio)
-- **Individual Tool Repositories**: [All 13 repositories](https://github.com/quitequinn)
-- **Sanity.io**: [Official Website](https://www.sanity.io/)
-- **Community**: [Sanity Slack](https://slack.sanity.io/)
-
-## 📄 **License**
-
-All 13 tools are released under the MIT License, making them free to use in both personal and commercial projects.
-
-## 🙏 **Acknowledgments**
-
-This comprehensive suite represents months of development and real-world usage across multiple production Sanity studios:
-
-- **Darden Studio** - Typography and font management workflows that inspired the font tools
-- **The Designer's Foundry** - Enhanced UX patterns that shaped the interface design
-- **Real Production Needs** - Every tool solves actual problems faced in live Sanity projects
-- **Sanity Community** - Inspiration and feedback that drives continuous improvement
+> Exact import specifiers and options live in each package's README — always check there, since APIs differ per tool.
 
 ---
 
-## 🎊 **Achievement Unlocked: Complete Suite**
+## Shared dev workflow
 
-**We've successfully created the most comprehensive Sanity Studio enhancement collection available:**
+[`test-studio/`](./test-studio) is a real Sanity Studio that imports the plugins **directly from their source directories** (not from npm), so you can develop a plugin and see it live without publishing. It mirrors the foundry-platform studio pattern (Structure + Utilities + font tools).
 
-✅ **14 Production-Ready Tools**  
-✅ **11,000+ Lines of TypeScript Code**  
-✅ **Complete E-commerce & Sales Analytics Solutions**  
-✅ **Professional Font Management**  
-✅ **Advanced Data Operations**  
-✅ **Master Dashboard Integration**  
-✅ **Open Source & Community-Ready**
+```bash
+# Run the shared test studio
+cd test-studio
+npm install
+npm run dev          # sanity dev
+```
+
+To work on a single plugin:
+
+```bash
+cd sanity-<plugin-name>
+npm install
+npm run build        # if the package has a build step
+```
+
+Because each tool is its own package, **there is no root-level install** — always `cd` into the specific tool directory (or `test-studio`) before running `npm`. Changes to shared packages affect every consuming studio (mckl/cms, tdf, positype, sorkin, and others), so verify in `test-studio` before publishing.
+
+> Most packages in this repo are git **submodules** with their own repositories and release pipelines. After cloning, run `git submodule update --init --recursive` to populate them.
 
 ---
 
-**Made with ❤️ for the Sanity community by [Liiift Studio](https://liiift.studio)**
+## Development standards
 
-_Transforming content management experiences, 13 tools at a time._
+- **TypeScript-first** with complete type definitions
+- **React functional components** with modern hooks
+- **Sanity UI** components for visual consistency with the Studio
+- **Comprehensive error handling** with user feedback
+- Test plugin changes in `test-studio` before committing
 
-**🚀 Ready to supercharge your Sanity Studio? All 14 tools are production-ready and waiting for you!**
+## Contributing
+
+Contributions are welcome. Because each tool is its own package (most are separate **submodule** repositories), the workflow has one important wrinkle: code changes land in the submodule's own repo first, then this front-door repo's pointer is updated.
+
+**Local setup:**
+
+```bash
+# Clone with all submodules populated
+git clone --recurse-submodules https://github.com/Liiift-Studio/liiift-sanity-tools.git
+cd liiift-sanity-tools
+
+# Or, if already cloned without submodules:
+git submodule update --init --recursive
+
+# Run the shared studio to develop against live plugin source
+cd test-studio && npm install && npm run dev
+```
+
+**To contribute a change:**
+
+1. **Pick a tool** from the [overview table](#choose-your-path--the-tool-suite).
+2. **Work inside that tool's directory** (`cd sanity-<tool>`), `npm install`, and develop against `test-studio` (`npm run dev`).
+3. **Open a pull request against that tool's own repository** — most tools are submodules with their own repo, so the PR goes there, not to this front-door repo. After it merges, the submodule pointer here is bumped to pick it up.
+4. **Share feedback** from your production usage — these tools grow from real-world needs.
+
+> **Installing the unpublished packages from source.** `sanity-sales-portal` and `sanity-renewals-authorization` are not on npm yet. Import them directly from their source directories (as `test-studio` does), or reference them via a local/file path until they are published.
+
+## Compatibility
+
+- **Sanity Studio:** all packages support v3; several also support v4 / v5. Support is **per package** — check each package's `sanity` `peerDependency` for the exact range (for example, `sanity-bulk-data-operations` declares `^3 || ^4 || ^5`, while `sanity-sales-portal` currently targets `^3` only).
+- **Runtime:** Node.js / modern browsers, per Sanity Studio's own requirements
+
+## Links & resources
+
+- **This repository:** [Liiift-Studio/liiift-sanity-tools](https://github.com/Liiift-Studio/liiift-sanity-tools)
+- **npm org:** [`@liiift-studio`](https://www.npmjs.com/org/liiift-studio)
+- **Organization:** [Liiift Studio](https://github.com/Liiift-Studio)
+- **Sanity.io:** [Official website](https://www.sanity.io/) · [Community Slack](https://slack.sanity.io/)
+
+## License
+
+Released under the MIT License — free to use in personal and commercial projects. Individual packages may carry their own license file; check each package.
+
+## Acknowledgments
+
+This suite grew out of months of development and real-world usage across multiple production Sanity studios:
+
+- **Darden Studio** — typography and font-management workflows that inspired the font tools
+- **The Designer's Foundry** — UX patterns that shaped the interface design
+- **Real production needs** — every tool solves an actual problem faced in live Sanity projects
+- **The Sanity community** — inspiration and feedback that drives continuous improvement
+
+---
+
+**Made with care for the Sanity community by [Liiift Studio](https://liiift.studio).**
