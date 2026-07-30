@@ -6,10 +6,10 @@ Last updated: 2026-07-29
 
 "Detect OTF" on a typeface document had **never** worked in the Darden dataset — every typeface
 reported zero features. Root cause in `src/components/SetOTF.jsx`: it derived the list of feature
-keys to test from `Object.keys(value)`, the openType field's own value. The per-feature sub-objects
-are `hidden` until their key is checked in `features`, so Sanity never materialises them and their
-`feature` initialValues (`aalt`, `smcp`, `ss01`, …) never reach the document. Empty key list →
-zero detections, always. Chicken-and-egg: it needed the answer to find the answer.
+keys to test from `Object.keys(value)`, the openType field's own value — so it could only ever test
+feature keys the document already carried. On Darden no typeface carries any (see the corrected
+mechanism note in the 2.11.9 section below), so the key list was always empty and detection returned
+zero every time. Chicken-and-egg: it needed the answer to find the answer.
 
 Shipped in 2.11.8 (published, commit `61f9425`):
 
@@ -52,10 +52,18 @@ Follow-up to 2.11.8, from an audit of the typeface document (commit `128b299`, p
 Suite: 308 passing. Audit found no other component using the `Object.keys(value)` antipattern —
 `SetOTF` was the only one.
 
-Mechanism note worth keeping: Sanity **does** materialise nested object initialValues at document
-creation, but **not for hidden fields**. Darden's legacy `opt` field proves the contrast — its
-sub-objects aren't hidden (that line is commented out) and all 66 materialised on every typeface,
-while `openType`'s hidden sub-objects never did.
+**Mechanism (corrected 2026-07-29 — an earlier note in this file blamed `hidden`; that was wrong).**
+Sanity applies initialValues **only at document creation**. `hidden` does not suppress them. Evidence
+from all three studios:
+
+| Studio | `openType` sub-objects present | Why | Old Detect OTF |
+|---|---|---|---|
+| MCKL | all 66 on every typeface | docs created when their local `openType` field already existed | worked — all 66 keys were there to test |
+| TDF | only for ticked features | ticking a checkbox materialises that sub-object with its initialValues | could only narrow an already-ticked set, never discover |
+| Darden | none, on all 17 | field wired in 2026-07; newest typeface doc is Daith, 2025-02-14 | always returned zero |
+
+So the only studio where Detect OTF worked (MCKL) is also the only one whose site renders the field —
+which is why this went unnoticed. 2.11.9 makes detection independent of document vintage everywhere.
 
 ## sanity-font-manager (v2.3.2, branch: feature/studio-version-badge)
 
