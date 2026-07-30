@@ -28,11 +28,34 @@ Shipped in 2.11.8 (published, commit `61f9425`):
 
 Verified against live Darden data: Daith's 80 styles union to 31 tags → 30 features detected.
 
-Known nit, not fixed (display-only, deliberately left alone): three `title` initialValues in
-`openTypeField.js` are sloppy — `allCaps` → `'allCaps'`, `standardLigatures` →
-`'StandardLigatures'`, `stylisticSet10` → `'Stylistic Set10'`. The new map uses the clean field
-titles instead, so a detected sub-object gets `'All Caps'` where a manually-checked one would get
-`'allCaps'`. Worth reconciling in the schema at some point.
+## sanity-font-manager 2.11.9 — title reconciliation + latent shape fix (2026-07-29)
+
+Follow-up to 2.11.8, from an audit of the typeface document (commit `128b299`, published).
+
+- **openType titles reconciled.** Five features had labels disagreeing between the field `title`, the
+  `features` checkbox option title, and the `title` initialValue — so the same feature could be
+  labelled two ways depending on whether it was detected or ticked by hand: `allCaps`,
+  `standardLigatures`, `stylisticSet10`, `capitalsToSmallCaps` (now lowercase "to", matching its
+  `capitalsToPetiteCaps` sibling) and `justifiedAlternates` (now the registered OpenType name
+  "Justification Alternates", which the initialValue already used). The drift guard now asserts
+  titles across all four places — it is what caught the last two, which I had missed by eye.
+- **Latent `opentypeFeatures` shape bug fixed.** `buildUploadPlan.js` wrote the field as a bare
+  array (`getAllFeatureTags(font)`, and `[]` on the error path) while the schema field and every
+  reader expect `{chars: [...]}`. `executeUploadPlan` only corrects it via `generateFontData` when
+  `fileInput.ttf || fileInput.otf` — so a **WOFF2-only upload would have written an unreadable
+  shape**, reproducing the exact symptom 2.11.8 just fixed. `[]` is truthy, so the error path wrote
+  one too. Never triggered: all 457 live Darden font docs are correctly shaped, because every real
+  upload has carried a TTF or OTF. Guarded by `src/tests/opentypeFeaturesShape.test.js`.
+- **`dedupeFontDocs`** added and applied in `collectSupportedTags`: draft/published pairs reduce to
+  one entry per font (draft wins), so the "across N of M styles" message can't exceed the real count.
+
+Suite: 308 passing. Audit found no other component using the `Object.keys(value)` antipattern —
+`SetOTF` was the only one.
+
+Mechanism note worth keeping: Sanity **does** materialise nested object initialValues at document
+creation, but **not for hidden fields**. Darden's legacy `opt` field proves the contrast — its
+sub-objects aren't hidden (that line is commented out) and all 66 materialised on every typeface,
+while `openType`'s hidden sub-objects never did.
 
 ## sanity-font-manager (v2.3.2, branch: feature/studio-version-badge)
 
