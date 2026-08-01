@@ -1,0 +1,13 @@
+This module bundles language orthography data derived from Hyperglot.
+
+Hyperglot
+  https://github.com/rosettatype/hyperglot
+  Copyright (c) Rosetta Type Foundry
+  Licensed under the Apache License, Version 2.0.
+
+The file data/orthographies.json is generated from the Hyperglot Python package
+(see scripts/export-data.py) and contains, per orthography, the Unicode codepoints
+a font must support. It is a derived dataset distributed under the same Apache-2.0
+license as Hyperglot. A copy of the Apache-2.0 license is available at:
+
+  http://www.apache.org/licenses/LICENSE-2.0
