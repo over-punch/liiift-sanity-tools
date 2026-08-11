@@ -1,39 +1,39 @@
 {
-	"name": "@liiift-studio/sanity-order-schema",
-	"version": "1.0.0",
-	"description": "Shared Sanity order schema for Liiift Studio typeface foundries — internal use only.",
-	"private": true,
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Liiift-Studio/sanity-tools.git"
-	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.esm.js",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"require": "./dist/index.js",
-			"import": "./dist/index.esm.js",
-			"types": "./dist/index.d.ts"
-		}
-	},
-	"files": [
-		"dist"
-	],
-	"scripts": {
-		"build": "tsup",
-		"dev": "tsup --watch"
-	},
-	"peerDependencies": {
-		"react": "^18 || ^19",
-		"sanity": "^3 || ^5"
-	},
-	"devDependencies": {
-		"@sanity/ui": "^3",
-		"@types/react": "^19",
-		"react": "^19",
-		"sanity": "^5",
-		"tsup": "^8",
-		"typescript": "^5"
-	}
+  "name": "@liiift-studio/sanity-order-schema",
+  "version": "1.1.0",
+  "description": "Shared Sanity order schema for Liiift Studio typeface foundries — internal use only.",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liiift-Studio/sanity-tools.git"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.esm.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "sanity": "^3 || ^5"
+  },
+  "devDependencies": {
+    "@sanity/ui": "^3",
+    "@types/react": "^19",
+    "react": "^19",
+    "sanity": "^5",
+    "tsup": "^8",
+    "typescript": "^5"
+  }
 }

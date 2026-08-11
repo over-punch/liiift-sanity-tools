@@ -1,5 +1,5 @@
-// Order status custom input — action buttons and summary panel for Sanity Studio
-import React, { useState } from 'react'
+// Order status custom input — action buttons, summary panel, and purchased-items detail for Sanity Studio
+import React, { useEffect, useState } from 'react'
 import {
 	Text,
 	Stack,
@@ -11,8 +11,9 @@ import {
 	MenuButton,
 	Menu,
 	MenuItem,
+	Card,
 } from '@sanity/ui'
-import { useFormValue, set, type ObjectInputProps } from 'sanity'
+import { useFormValue, useClient, set, type ObjectInputProps } from 'sanity'
 
 /** Fields stored inside the orderStatus object */
 interface OrderStatusValue {
@@ -52,6 +53,66 @@ const labelStyle = { textTransform: 'uppercase' as const, letterSpacing: '0.06em
 const truncateId = (id?: string | null) =>
 	id ? id.slice(0, 22) + (id.length > 22 ? '…' : '') : null
 
+/** A Sanity reference as it appears in the raw form value */
+interface Ref { _ref?: string }
+
+/** One licence tier as stored on a typeface line: an allowance plus an optional term */
+interface LicenseTier {
+	value?: number
+	label?: string
+	yearsValue?: number
+	yearsLabel?: string
+}
+
+/** One purchased typeface line on the order */
+interface TypefaceLine {
+	_key?: string
+	typeface?: Ref
+	fonts?: Ref[]
+	collections?: Ref[]
+	licenseDesktop?: LicenseTier
+	licenseWeb?: LicenseTier
+	licenseApp?: LicenseTier
+	licenseFluid?: LicenseTier
+}
+
+/** One purchased merch line on the order */
+interface MerchLine {
+	_key?: string
+	merchItem?: Ref
+	amount?: number
+}
+
+/** A manually added line item (setup fees, custom work, discounts applied as items) */
+interface LineItem {
+	_key?: string
+	title?: string
+	description?: string
+	quantity?: number
+	price?: number
+}
+
+/** Formats a dollar amount for display; order costs carry float noise from tax maths. */
+const money = (n?: number | null) =>
+	typeof n === 'number' && !Number.isNaN(n)
+		? n.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+		: '—'
+
+/** Renders the licences bought on a typeface line as "Desktop 1 CPUs / 1 year" strings. */
+function licenseSummary(line: TypefaceLine): string[] {
+	return ([
+		['Desktop', line.licenseDesktop],
+		['Web', line.licenseWeb],
+		['App', line.licenseApp],
+		['Fluid', line.licenseFluid],
+	] as [string, LicenseTier | undefined][])
+		.filter(([, tier]) => tier && Number(tier.value) > 0)
+		.map(([name, tier]) => {
+			const size = tier?.label || String(tier?.value ?? '')
+			return tier?.yearsLabel ? `${name} ${size} / ${tier.yearsLabel}` : `${name} ${size}`
+		})
+}
+
 /** Order status panel — confirm, resend, rebuild, wire-verify actions */
 export const ConfirmOrderComp = (props: ObjectInputProps) => {
 	const { value, onChange } = props
@@ -75,12 +136,64 @@ export const ConfirmOrderComp = (props: ObjectInputProps) => {
 	const licenseeLastName   = useFormValue(['licenseeAddress', 'lastName']) as string | undefined
 	const behalfOfIndividual = useFormValue(['licenseeAddress', 'behalfOfIndividual']) as boolean | undefined
 	const billingEmail       = useFormValue(['billingAddress', 'email']) as string | undefined
-	const merch              = useFormValue(['merch']) as unknown[] | undefined
+	const merch              = useFormValue(['merch']) as MerchLine[] | undefined
 	const hasMerch           = (merch?.length ?? 0) > 0
+
+	const typefaceLines      = useFormValue(['typefaces']) as TypefaceLine[] | undefined
+	const lineItems          = useFormValue(['additionalLineItems']) as LineItem[] | undefined
+	const cost               = useFormValue(['cost']) as number | undefined
+	const receiptUrl         = useFormValue(['invoice']) as string | undefined
 
 	const [loading, setLoading]           = useState(false)
 	const [error, setError]               = useState<string | null>(null)
 	const [detailsOpen, setDetailsOpen]   = useState(false)
+
+	// Titles for every document the order references, keyed by _id. The form value holds bare
+	// references, so the names have to be fetched before the breakdown can name anything.
+	const client = useClient({ apiVersion: '2023-03-12' })
+	const [refTitles, setRefTitles] = useState<Record<string, string>>({})
+	const [refsLoading, setRefsLoading] = useState(false)
+
+	// Collected here rather than in the effect so the dependency is a stable string.
+	const refIds = [
+		...(typefaceLines ?? []).flatMap(l => [
+			l.typeface?._ref,
+			...(l.fonts ?? []).map(f => f?._ref),
+			...(l.collections ?? []).map(c => c?._ref),
+		]),
+		...(merch ?? []).map(m => m.merchItem?._ref),
+	].filter(Boolean) as string[]
+	const refKey = refIds.join(',')
+
+	useEffect(() => {
+		// Only resolve once the panel is actually open — an order list should not fan out queries.
+		if (!detailsOpen || !refIds.length) return
+		const missing = refIds.filter(id => !(id in refTitles))
+		if (!missing.length) return
+
+		let cancelled = false
+		setRefsLoading(true)
+		client.fetch<{ _id: string, title?: string }[]>('*[_id in $ids]{_id, title}', { ids: missing })
+			.then(docs => {
+				if (cancelled) return
+				const next: Record<string, string> = {}
+				// Missing ids are recorded too, so a deleted reference does not retry on every render.
+				for (const id of missing) next[id] = ''
+				for (const d of docs) next[d._id] = d.title ?? ''
+				setRefTitles(prev => ({ ...prev, ...next }))
+			})
+			.catch(e => console.warn('Could not resolve order references:', e?.message))
+			.finally(() => { if (!cancelled) setRefsLoading(false) })
+
+		return () => { cancelled = true }
+	}, [detailsOpen, refKey])
+
+	/** Reference title, falling back to the raw id so a broken reference is still identifiable. */
+	const titleOf = (ref?: Ref) => {
+		const id = ref?._ref
+		if (!id) return '—'
+		return refTitles[id] || id
+	}
 
 	const siteUrl = process.env.SANITY_STUDIO_SITE_URL ?? ''
 
@@ -242,7 +355,7 @@ export const ConfirmOrderComp = (props: ObjectInputProps) => {
 					{hasMerch && (
 						<Stack space={2}>
 							<Text size={0} muted style={labelStyle}>Shipment</Text>
-							<Text size={1} tone={shippingStatus ? 'positive' : 'caution'}>
+							<Text size={1} style={{ color: shippingStatus ? 'var(--card-positive-fg-color, #43d675)' : 'var(--card-caution-fg-color, #f5a623)' }}>
 								{status !== 'verified' ? '—' : shippingStatus ? 'Email sent' : 'Not sent'}
 							</Text>
 						</Stack>
@@ -271,7 +384,7 @@ export const ConfirmOrderComp = (props: ObjectInputProps) => {
 					<Button disabled={loading} mode="ghost" tone="critical" onClick={() => buttonPress('wire', 'reject')} text="Reject" />
 				)}
 				{hasPrimaryAction && status === 'wireFail' && (
-					<Text size={1} tone="critical">Wire Cancelled</Text>
+					<Text size={1} style={{ color: 'var(--card-critical-fg-color, #e05252)' }}>Wire Cancelled</Text>
 				)}
 				{hasPrimaryAction && (
 					<Text size={1} muted style={{ opacity: 0.25 }}>|</Text>
@@ -294,6 +407,91 @@ export const ConfirmOrderComp = (props: ObjectInputProps) => {
 					text={detailsOpen ? 'Close Details' : 'Details'}
 				/>
 			</Inline>
+
+			{/* Purchased items, licences and total — accordion */}
+			{detailsOpen && (
+				<Card padding={3} radius={2} shadow={1} tone="transparent">
+					<Stack space={4}>
+						<Inline space={2}>
+							<Text size={0} muted style={labelStyle}>Purchased</Text>
+							{refsLoading && <Spinner size={0} />}
+						</Inline>
+
+						{(typefaceLines ?? []).map((line, i) => {
+							const licenses = licenseSummary(line)
+							const fonts = (line.fonts ?? []).map(titleOf).filter(t => t !== '—')
+							const collections = (line.collections ?? []).map(titleOf).filter(t => t !== '—')
+							return (
+								<Stack space={2} key={line._key ?? i}>
+									<Text size={1} weight="semibold">
+										{titleOf(line.typeface)}
+										{fonts.length ? ` — ${fonts.length} ${fonts.length === 1 ? 'style' : 'styles'}` : ''}
+										{collections.length ? ` + ${collections.length} ${collections.length === 1 ? 'collection' : 'collections'}` : ''}
+									</Text>
+									{!!fonts.length && <Text size={1} muted>{fonts.join(', ')}</Text>}
+									{!!collections.length && <Text size={1} muted>Collections: {collections.join(', ')}</Text>}
+									<Text size={1} style={{ opacity: licenses.length ? 0.9 : 0.35 }}>
+										{licenses.length ? licenses.join('  ·  ') : 'No licence selected'}
+									</Text>
+								</Stack>
+							)
+						})}
+
+						{(merch ?? []).map((m, i) => (
+							<Stack space={2} key={m._key ?? i}>
+								<Text size={1} weight="semibold">{titleOf(m.merchItem)}</Text>
+								<Text size={1} muted>Qty {m.amount ?? 1}</Text>
+							</Stack>
+						))}
+
+						{(lineItems ?? []).map((li, i) => (
+							<Stack space={2} key={li._key ?? i}>
+								<Text size={1} weight="semibold">{li.title || 'Line item'}</Text>
+								<Text size={1} muted>
+									{li.description ? `${li.description} — ` : ''}
+									{li.quantity ?? 1} × {money(li.price)}
+								</Text>
+							</Stack>
+						))}
+
+						{!typefaceLines?.length && !merch?.length && !lineItems?.length && (
+							<Text size={1} muted>No items recorded on this order.</Text>
+						)}
+
+						{/* Cost excludes tax and shipping — say so rather than implying it is the charge. */}
+						<Inline space={3}>
+							<Text size={0} muted style={labelStyle}>Total</Text>
+							<Text size={2} weight="semibold">{money(cost)}</Text>
+							<Text size={0} muted>discount included · tax &amp; shipping excluded</Text>
+						</Inline>
+
+						{(receiptUrl || invoiceId) && (
+							<Inline space={2}>
+								{receiptUrl && (
+									<Button
+										mode="ghost"
+										as="a"
+										href={receiptUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										text="Open receipt"
+									/>
+								)}
+								{invoiceId && (
+									<Button
+										mode="ghost"
+										as="a"
+										href={`https://dashboard.stripe.com/invoices/${invoiceId}`}
+										target="_blank"
+										rel="noopener noreferrer"
+										text="Stripe invoice"
+									/>
+								)}
+							</Inline>
+						)}
+					</Stack>
+				</Card>
+			)}
 
 			{/* ID details — accordion */}
 			{detailsOpen && (
