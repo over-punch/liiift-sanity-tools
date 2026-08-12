@@ -303,6 +303,14 @@ export function createOrderSchema(options: OrderSchemaOptions = {}) {
 		},
 	] : []
 
+	/** Stored value of one licence tier: an allowance plus an optional term */
+	type LicenseTierValue = {
+		value?: number
+		label?: string
+		yearsValue?: number
+		yearsLabel?: string
+	}
+
 	/** License tier object — shared shape across desktop, web, app, fluid */
 	const licenseTier = (title: string, name: string) => ({
 		title,
@@ -379,26 +387,116 @@ export function createOrderSchema(options: OrderSchemaOptions = {}) {
 						licenseTier('License Web',     'licenseWeb'),
 						licenseTier('License App',     'licenseApp'),
 						licenseTier('License Fluid',   'licenseFluid'),
+						// Licence lifecycle — deliberately separate from orderStatus, which records a
+						// payment fact. A licence can be revoked without a refund (breach) or refunded
+						// without revocation (goodwill). Absent means active, so no existing order
+						// needs backfilling.
+						{
+							title: 'Licence Status',
+							name: 'licenseStatus',
+							type: 'string',
+							options: {
+								list: [
+									{ title: 'Active', value: 'active' },
+									{ title: 'Revoked', value: 'revoked' },
+									{ title: 'Superseded (replaced by another order)', value: 'superseded' },
+								],
+								layout: 'radio',
+							},
+							description: 'Leave unset for an active licence. Revoked and superseded lines are excluded from renewals.',
+						},
+						{
+							title: 'Revoked / Superseded On',
+							name: 'revokedAt',
+							type: 'datetime',
+							hidden: ({ parent }: { parent?: { licenseStatus?: string } }) =>
+								!parent?.licenseStatus || parent.licenseStatus === 'active',
+						},
+						{
+							title: 'Reason',
+							name: 'revokedReason',
+							type: 'string',
+							options: {
+								list: [
+									{ title: 'Refunded', value: 'refunded' },
+									{ title: 'Wrong licence selected', value: 'wrong-licence' },
+									{ title: 'Replaced by another order', value: 'replaced' },
+									{ title: 'Breach of licence', value: 'breach' },
+									{ title: 'Other', value: 'other' },
+								],
+							},
+							hidden: ({ parent }: { parent?: { licenseStatus?: string } }) =>
+								!parent?.licenseStatus || parent.licenseStatus === 'active',
+						},
+						{
+							title: 'Replaced By Order',
+							name: 'replacedByOrder',
+							type: 'reference',
+							weak: true,
+							to: [{ type: 'order' }],
+							description: 'The order that carries the corrected licence.',
+							hidden: ({ parent }: { parent?: { licenseStatus?: string } }) =>
+								parent?.licenseStatus !== 'superseded',
+						},
 					],
 					preview: {
 						select: {
 							typeface: 'typeface.title',
 							allFonts: 'fonts',
-							font0: 'fonts.0.title',
-							font1: 'fonts.1.title',
-							font2: 'fonts.2.title',
-							font3: 'fonts.3.title',
+							allCollections: 'collections',
+							licenseDesktop: 'licenseDesktop',
+							licenseWeb: 'licenseWeb',
+							licenseApp: 'licenseApp',
+							licenseFluid: 'licenseFluid',
+							licenseStatus: 'licenseStatus',
 						},
-						prepare({ typeface, allFonts, font0, font1, font2, font3 }: {
+						prepare({ typeface, allFonts, allCollections, licenseDesktop, licenseWeb, licenseApp, licenseFluid, licenseStatus }: {
 							typeface?: string
-							allFonts?: Record<string, unknown>
-							font0?: string; font1?: string; font2?: string; font3?: string
+							allFonts?: unknown
+							allCollections?: unknown
+							licenseDesktop?: LicenseTierValue
+							licenseWeb?: LicenseTierValue
+							licenseApp?: LicenseTierValue
+							licenseFluid?: LicenseTierValue
+							licenseStatus?: string
 						}) {
-							const numFonts = Object.keys(allFonts ?? {}).length
-							const fonts = [font0, font1, font2, font3].filter(Boolean).join(', ')
+							// Counting with Object.keys() reported a single font as "4 styles" — it was
+							// counting the properties of that one reference (_key, _ref, _type, _weak)
+							// rather than the entries. Count entries, whatever shape select hands back.
+							const countEntries = (v: unknown) => Array.isArray(v) ? v.length : (v ? 1 : 0)
+							const numFonts = countEntries(allFonts)
+							const numCollections = countEntries(allCollections)
+
+							const parts: string[] = []
+							if (numFonts) parts.push(`${numFonts} ${numFonts === 1 ? 'style' : 'styles'}`)
+							if (numCollections) parts.push(`${numCollections} ${numCollections === 1 ? 'collection' : 'collections'}`)
+
+							// The licences bought distinguish one line from another far more usefully
+							// than repeating the style names.
+							const licenses = ([
+								['Desktop', licenseDesktop],
+								['Web', licenseWeb],
+								['App', licenseApp],
+								['Fluid', licenseFluid],
+							] as [string, LicenseTierValue | undefined][])
+								.filter(([, tier]) => tier && Number(tier.value) > 0)
+								.map(([name, tier]) => {
+									const size = tier?.label || String(tier?.value ?? '')
+									return tier?.yearsLabel ? `${name} ${size} / ${tier.yearsLabel}` : `${name} ${size}`
+								})
+
+							// An inactive licence is the most important thing about the line, so it
+							// leads the title rather than hiding at the end of the subtitle.
+							const inactive = !!licenseStatus && licenseStatus !== 'active'
+							const statusPrefix = licenseStatus === 'revoked' ? '⊘ REVOKED — '
+								: licenseStatus === 'superseded' ? '↪ SUPERSEDED — '
+								: ''
+
 							return {
-								title: `${typeface} (${numFonts} styles)`,
-								subtitle: font3 ? `${fonts}...` : fonts,
+								title: `${statusPrefix}${typeface}${parts.length ? ` (${parts.join(', ')})` : ''}`,
+								subtitle: licenses.length
+									? `${licenses.join('  ·  ')}${inactive ? '  —  not counted for renewals' : ''}`
+									: 'No licence selected',
 							}
 						},
 					},

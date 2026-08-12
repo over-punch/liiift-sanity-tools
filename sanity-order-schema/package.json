@@ -1,6 +1,6 @@
 {
   "name": "@liiift-studio/sanity-order-schema",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Shared Sanity order schema for Liiift Studio typeface foundries — internal use only.",
   "private": true,
   "repository": {

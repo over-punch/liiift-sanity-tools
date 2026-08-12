@@ -74,6 +74,9 @@ interface TypefaceLine {
 	licenseWeb?: LicenseTier
 	licenseApp?: LicenseTier
 	licenseFluid?: LicenseTier
+	/** Absent means active; revoked and superseded lines are excluded from renewals */
+	licenseStatus?: string
+	revokedReason?: string
 }
 
 /** One purchased merch line on the order */
@@ -421,9 +424,17 @@ export const ConfirmOrderComp = (props: ObjectInputProps) => {
 							const licenses = licenseSummary(line)
 							const fonts = (line.fonts ?? []).map(titleOf).filter(t => t !== '—')
 							const collections = (line.collections ?? []).map(titleOf).filter(t => t !== '—')
+							const inactive = !!line.licenseStatus && line.licenseStatus !== 'active'
 							return (
-								<Stack space={2} key={line._key ?? i}>
-									<Text size={1} weight="semibold">
+								<Stack space={2} key={line._key ?? i} style={inactive ? { opacity: 0.55 } : undefined}>
+									{inactive && (
+										<Text size={0} style={{ ...labelStyle, color: 'var(--card-critical-fg-color, #e05252)' }}>
+											{line.licenseStatus === 'superseded' ? 'Superseded' : 'Revoked'}
+											{line.revokedReason ? ` — ${line.revokedReason.replace(/-/g, ' ')}` : ''}
+											{' · not counted for renewals'}
+										</Text>
+									)}
+									<Text size={1} weight="semibold" style={inactive ? { textDecoration: 'line-through' } : undefined}>
 										{titleOf(line.typeface)}
 										{fonts.length ? ` — ${fonts.length} ${fonts.length === 1 ? 'style' : 'styles'}` : ''}
 										{collections.length ? ` + ${collections.length} ${collections.length === 1 ? 'collection' : 'collections'}` : ''}
