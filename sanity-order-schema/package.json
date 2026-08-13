@@ -2,19 +2,23 @@
   "name": "@liiift-studio/sanity-order-schema",
   "version": "1.2.0",
   "description": "Shared Sanity order schema for Liiift Studio typeface foundries — internal use only.",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Liiift-Studio/sanity-tools.git"
   },
   "main": "./dist/index.js",
-  "module": "./dist/index.esm.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.esm.js",
-      "types": "./dist/index.d.ts"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     }
   },
   "files": [
