@@ -1,7 +1,7 @@
 {
   "name": "@liiift-studio/sanity-order-schema",
   "version": "1.2.0",
-  "description": "Shared Sanity order schema for Liiift Studio typeface foundries — internal use only.",
+  "description": "RETIRED — inlined into sites/darden/sanity/schemas/order.tsx. Do not publish.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Liiift-Studio/sanity-tools.git"
@@ -39,5 +39,6 @@
     "sanity": "^5",
     "tsup": "^8",
     "typescript": "^5"
-  }
+  },
+  "private": true
 }

@@ -1,61 +1,35 @@
-# @liiift-studio/sanity-order-schema
+# @liiift-studio/sanity-order-schema — RETIRED
 
-**Internal — not published to npm.**
+**This package is retired. Do not use it, and do not publish it.**
 
-Shared Sanity `order` document schema for Liiift Studio typeface foundries (Darden, TDF, Sorkin, MCKL). Exposes a `createOrderSchema(options)` factory that reads feature flags from environment variables so each studio only shows the fields it needs.
+The order schema now lives directly in Darden:
 
----
+- `sites/darden/sanity/schemas/order.tsx`
+- `sites/darden/sanity/schemas/components/confirmOrderComp.tsx`
 
-## Usage
+## Why it was retired
 
-```ts
-// sanity/schemas/order.ts
-import { createOrderSchema } from '@liiift-studio/sanity-order-schema'
+It was extracted so the five foundry sites could share one order schema. They cannot:
 
-export default createOrderSchema()
-```
+- **Licence model.** This schema hardcodes four fixed tiers (`licenseDesktop/Web/App/Fluid`) in five
+  separate places. TDF, MCKL, Sorkin and Positype all model licences as `typefaces[].licenses[]` —
+  a different arity and query shape, not a feature toggle.
+- **Reference type names.** It hardcodes `to: [{type: 'discounts'}]`. TDF has only `discount`; MCKL
+  has `discount` and `discountCode`. An unresolvable reference target is a schema-validation error at
+  Studio boot, so this schema could not load on either site at all.
+- **Field shapes.** TDF/MCKL use `address1`/`address2` and `billingAddress.taxNumber`; TDF calls the
+  merch array `good`; three sites nest `scripts` inside `typefaces[]` while this puts it at the top
+  level.
 
-## Feature Flags
+With Darden as the only viable consumer, the package was indirection with no sharing benefit, plus a
+version-skew surface and a published-artifact risk. Making it genuinely shareable would mean
+parameterising the licence model, a reference-type name map, and per-site field modules — a real
+project, and nobody is asking for it.
 
-Each flag reads its corresponding `SANITY_STUDIO_*` env var by default, but can be overridden explicitly:
+## Publication
 
-| Option | Env var | What it adds |
-|---|---|---|
-| `enableRenewals` | `SANITY_STUDIO_RENEWALS_ENABLED` | Order type selector, renewal info, upgrade info |
-| `enableMerch` | `SANITY_STUDIO_MERCH_ENABLED` | Merch array, shipping cluster, shipping address |
-| `enableScripts` | `SANITY_STUDIO_SCRIPTS_ENABLED` | Scripts support array |
-| `enableGuestCheckout` | `SANITY_STUDIO_GUEST_CHECKOUT` | Suppresses the account reference field |
+`1.2.0` was published to the public npm registry on 2026-08-13 and has been unpublished. It should
+not be republished. Findings from the review that prompted this are tracked in
+`Liiift-Studio/liiift-sanity-tools` and `Liiift-Studio/Darden-Studio` under the `deep-review` label.
 
-**Example — Darden (renewals + merch, no scripts, no account ref):**
-```ts
-createOrderSchema() // reads env vars directly
-```
-
-**Example — Sorkin (scripts, account ref, no merch):**
-```ts
-createOrderSchema({
-  enableScripts: true,
-  enableGuestCheckout: false, // shows account reference
-})
-```
-
-## Consuming this package
-
-Since it's private (not on npm), reference it from the parent sanity-tools git repo:
-
-```json
-"@liiift-studio/sanity-order-schema": "github:Liiift-Studio/sanity-tools#main&path=sanity-order-schema"
-```
-
-Or via a local file path during development:
-```json
-"@liiift-studio/sanity-order-schema": "file:../../tools/sanity-tools/sanity-order-schema"
-```
-
-## Building
-
-```bash
-npm install
-npm run build   # outputs to dist/
-npm run dev     # watch mode
-```
+The source is kept here for history only.
