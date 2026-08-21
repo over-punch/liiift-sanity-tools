@@ -22,8 +22,29 @@ const FALLBACK_CODE_STYLE: CSSProperties = {
 	margin: 0,
 }
 
-/** Monospace block. Uses Studio's Code where available, a plain `<code>` on @sanity/ui v4+. */
-export function Code({ style, children }: { style?: CSSProperties; children: ReactNode }): React.JSX.Element {
-	if (InstalledCode) return <InstalledCode size={1} style={style}>{children}</InstalledCode>
-	return <code style={{ ...FALLBACK_CODE_STYLE, ...style }}>{children}</code>
+/** Font sizes on Sanity's type scale, for the fallback path. Index matches upstream's `size`. */
+const FALLBACK_SIZES: Record<number, string> = {
+	0: '0.75rem', 1: '0.8125rem', 2: '0.9375rem', 3: '1.0625rem', 4: '1.1875rem', 5: '1.5rem',
+}
+
+/** Props for the compat Code. */
+export type CodeProps = {
+	/** Size step on Sanity's type scale. Defaults to 1, matching upstream's own default. */
+	size?: number
+	style?: CSSProperties
+	children: ReactNode
+}
+
+/**
+ * Monospace block. Uses Studio's Code where available, a plain `<code>` on
+ * @sanity/ui v4+.
+ *
+ * `size` is forwarded rather than hardcoded. An earlier version pinned `size={1}`
+ * and did not accept the prop, which forced consumers to delete their own `size`
+ * at the call site — fine when they happened to pass 1, silently wrong otherwise.
+ */
+export function Code({ size = 1, style, children }: CodeProps): React.JSX.Element {
+	if (InstalledCode) return <InstalledCode size={size} style={style}>{children}</InstalledCode>
+	const fontSize = FALLBACK_SIZES[size] ?? FALLBACK_SIZES[1]
+	return <code style={{ ...FALLBACK_CODE_STYLE, fontSize, ...style }}>{children}</code>
 }

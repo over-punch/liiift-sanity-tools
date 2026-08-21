@@ -10,7 +10,9 @@ export { useToast, ToastViewport } from './toast'
 export type { ToastParams, Toaster } from './toast'
 
 export { Tooltip } from './tooltip'
-export type { TooltipProps } from './tooltip'
+export type { TooltipProps, TooltipPlacement } from './tooltip'
+
+export { usePrefersDark } from './hooks'
 
 export { ActionMenu, Menu, MenuButton, MenuItem } from './menu'
 export type {
@@ -19,6 +21,7 @@ export type {
 } from './menu'
 
 export { Code } from './code'
+export type { CodeProps } from './code'
 
 export { Progress } from './progress'
 export type { ProgressProps } from './progress'

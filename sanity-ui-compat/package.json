@@ -1,6 +1,6 @@
 {
   "name": "@liiift-studio/sanity-ui-compat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Version-agnostic access to @sanity/ui and @sanity/icons across Studio v3 to v6",
   "license": "UNLICENSED",
   "private": false,
@@ -43,7 +43,9 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build",
-    "probe": "node scripts/probe-resolution.mjs"
+    "probe": "node scripts/probe-resolution.mjs",
+    "smoke": "node scripts/render-smoke.mjs",
+    "verify": "npm run typecheck && npm run build && npm run probe && npm run smoke"
   },
   "keywords": [
     "sanity",
@@ -61,6 +63,7 @@
     "@types/react": "^19",
     "react": "^19",
     "tsup": "^8",
-    "typescript": "^5"
+    "typescript": "^5",
+    "react-dom": "^19"
   }
 }

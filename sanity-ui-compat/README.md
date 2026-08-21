@@ -73,29 +73,37 @@ shipping it on a v4 Studio.
 ## Verifying
 
 ```bash
-npm run typecheck   # necessary, NOT sufficient — see above
-npm run build
-npm run probe       # resolves every export against the INSTALLED majors
+npm run verify      # typecheck + build + probe + smoke
 ```
 
-`npm run probe` is the one that matters. It reports which primitives fell back to
-DOM, whether `STACK_USES_GAP` detected correctly, and — most usefully — any icon
-whose symbol is absent from the installed map, which is the failure a build can
-never catch. Re-run it against each new `@sanity/ui` / `@sanity/icons` major.
+Or individually:
 
-Last probe, against `@sanity/ui` 4.0.5 + `@sanity/icons` 5.2.1:
+| script | what it proves |
+|---|---|
+| `typecheck` | types line up. Necessary, **not** sufficient — see the trap above |
+| `probe` | every export *binds* to something real against the installed majors |
+| `smoke` | the fallbacks actually **render**, and translated props reach the DOM |
+
+`smoke` is the one that catches real regressions. Both defects found by the first
+adoption pass — a narrowed `Tooltip` silently dropping `content`/`placement`, and
+`Grid` missing `gap` — were invisible to `tsc` **and** to `probe`, and both are now
+covered. It also caught that real `@sanity/ui` components throw outright without a
+`ThemeProvider`, which is why the harness supplies one.
+
+Last run, against `@sanity/ui` 4.0.5 + `@sanity/icons` 5.2.1 (the hard case):
 
 ```
-STACK_USES_GAP = true
-primitives falling back to DOM on v4: none
-wrapper exports present: 14/14
-icons resolving to MissingIcon: none
-symbol table rows: 43 | symbols absent from v5 map: none
+STACK_USES_GAP = true          primitives falling back to DOM: none
+wrapper exports present: 14/14 icons resolving to MissingIcon: none
+symbol table rows: 43          symbols absent from v5 map: none
+20/20 render checks passed
 ```
 
-**Resolution is not rendering.** The probe proves every name binds to something
-real; it does not prove a tooltip positions correctly or that the fallback menu
-traps focus. Exercise those in `test-studio` on a v6 Studio before publishing.
+**Still not proven.** These render through `react-dom/server` in Node, not in a
+Studio. Server rendering cannot exercise hover, keyboard focus, portalling or
+layer stacking — so the fallback `Tooltip`'s placement, the fallback menu's roving
+focus and Escape handling, and whether either sits *above* a Studio dialog remain
+unverified. Those need `test-studio` on Sanity 6.
 
 ## Status
 

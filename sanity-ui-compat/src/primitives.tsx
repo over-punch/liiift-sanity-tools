@@ -89,10 +89,18 @@ const SanityBadge = primitive('Badge', 'span')
  * Grid columns 48, Badge mode 12, Inline space 5.
  */
 
-/** Props for the compat Stack. Mirrors the upstream surface these plugins use. */
+/**
+ * Props for the compat Stack.
+ *
+ * Accepts both spellings of the spacing prop — `space` (v2/v3) and `gap` (v4) —
+ * and translates to whichever the installed major wants. `gap` wins if both are
+ * given. Accepting both means neither spelling has to be rewritten at a call site.
+ */
 export type StackProps = {
-	/** Spacing step on Sanity's scale, forwarded as `gap` or `space` per installed major. */
+	/** Spacing step, v2/v3 spelling. Forwarded as `gap` on v4+. */
 	space?: number
+	/** Spacing step, v4 spelling. Forwarded as `space` on v2/v3. */
+	gap?: number
 	padding?: number
 	paddingX?: number
 	paddingY?: number
@@ -108,24 +116,38 @@ export type StackProps = {
  * one call site spells spacing correctly on either major. See STACK_USES_GAP for
  * how the two are told apart.
  */
-export function Stack({ space, children, ...rest }: StackProps): React.JSX.Element {
-	const spacing = space === undefined ? {} : STACK_USES_GAP ? { gap: space } : { space }
+export function Stack({ space, gap, children, ...rest }: StackProps): React.JSX.Element {
+	const value = gap ?? space
+	const spacing = value === undefined ? {} : STACK_USES_GAP ? { gap: value } : { space: value }
 	return <SanityStack {...rest} {...spacing}>{children}</SanityStack>
 }
 
 /** Props for the compat Inline. */
-export type InlineProps = Omit<StackProps, 'role'> & { role?: string }
+export type InlineProps = StackProps
 
-/** Horizontal inline layout. Same `space` → `gap` rename as Stack on v4. */
-export function Inline({ space, children, ...rest }: InlineProps): React.JSX.Element {
-	const spacing = space === undefined ? {} : STACK_USES_GAP ? { gap: space } : { space }
+/** Horizontal inline layout. Same two-way `space`/`gap` translation as Stack. */
+export function Inline({ space, gap, children, ...rest }: InlineProps): React.JSX.Element {
+	const value = gap ?? space
+	const spacing = value === undefined ? {} : STACK_USES_GAP ? { gap: value } : { space: value }
 	return <SanityInline {...rest} {...spacing}>{children}</SanityInline>
 }
 
-/** Props for the compat Grid, covering the three props v4 renamed. */
+/**
+ * Props for the compat Grid.
+ *
+ * Both spellings of the gap are accepted. `space` is the v2/v3 name, `gap` the v4
+ * name — callers may already use either, and translating in both directions means
+ * neither has to be rewritten at the call site. `gap` wins if both are given.
+ */
 export type GridProps = {
-	/** Gap step. `space` on v2/v3, `gap` on v4+. */
+	/** Gap step, v2/v3 spelling. Forwarded as `gap` on v4+. */
 	space?: number
+	/** Gap step, v4 spelling. Forwarded as `space` on v2/v3. */
+	gap?: number
+	/** Column gap. Forwarded as `spaceX` on v2/v3. */
+	gapX?: number
+	/** Row gap. Forwarded as `spaceY` on v2/v3. */
+	gapY?: number
 	/** Column template. Renamed to `gridTemplateColumns` on v4. */
 	columns?: number | number[]
 	/** Row template. Renamed to `gridTemplateRows` on v4. */
@@ -140,10 +162,16 @@ export type GridProps = {
  * CSS grid. v4 renamed `space`, `columns` and `rows`; all three are ignored under
  * their old names, so a grid silently becomes a single column. The rename is keyed
  * off STACK_USES_GAP because the whole family moved in the same release.
+ *
+ * Translation runs BOTH ways so a call site spelling either name is correct on
+ * either major.
  */
-export function Grid({ space, columns, rows, children, ...rest }: GridProps): React.JSX.Element {
+export function Grid({ space, gap, gapX, gapY, columns, rows, children, ...rest }: GridProps): React.JSX.Element {
 	const translated: Record<string, unknown> = {}
-	if (space !== undefined) translated[STACK_USES_GAP ? 'gap' : 'space'] = space
+	const spacing = gap ?? space
+	if (spacing !== undefined) translated[STACK_USES_GAP ? 'gap' : 'space'] = spacing
+	if (gapX !== undefined) translated[STACK_USES_GAP ? 'gapX' : 'spaceX'] = gapX
+	if (gapY !== undefined) translated[STACK_USES_GAP ? 'gapY' : 'spaceY'] = gapY
 	if (columns !== undefined) translated[STACK_USES_GAP ? 'gridTemplateColumns' : 'columns'] = columns
 	if (rows !== undefined) translated[STACK_USES_GAP ? 'gridTemplateRows' : 'rows'] = rows
 	return <SanityGrid {...rest} {...translated}>{children}</SanityGrid>
