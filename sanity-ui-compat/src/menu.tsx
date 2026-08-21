@@ -51,6 +51,8 @@ type InstalledMenuItemProps = {
 	href?: string
 	target?: string
 	rel?: string
+	/** Present on @sanity/ui v2/v3. Must be forwarded — see the note on MenuItem. */
+	disabled?: boolean
 }
 
 const InstalledMenuButton = resolveComponent<InstalledMenuButtonProps>(UI, 'MenuButton')
@@ -349,6 +351,13 @@ export function Menu({ children, style }: CompatMenuProps): React.JSX.Element {
 export function MenuItem({
 	text, icon, tone, onClick, as, href, target, rel, disabled, children,
 }: CompatMenuItemProps): React.JSX.Element {
+	/*
+	 * `disabled` must be forwarded here. An earlier version omitted it, so on v2/v3 —
+	 * the path most Studios take — a disabled item rendered fully enabled and
+	 * clickable, while the v4 fallback below honoured it correctly. That is the worst
+	 * shape of bug this package can have: correct on the major being migrated TO, and
+	 * silently wrong on the one currently in production.
+	 */
 	if (InstalledMenuItem) {
 		return (
 			<InstalledMenuItem
@@ -360,6 +369,7 @@ export function MenuItem({
 				href={href}
 				target={target}
 				rel={rel}
+				disabled={disabled}
 			/>
 		)
 	}
