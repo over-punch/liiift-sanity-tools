@@ -1,6 +1,82 @@
 # Active Context — sanity-tools monorepo
 
-Last updated: 2026-07-29
+Last updated: 2026-08-20
+
+## New package: @liiift-studio/sanity-ui-compat 0.1.0 (2026-08-20)
+
+Built to unblock taking the Studios to Sanity v6. **Not yet published, not yet adopted by any
+plugin.** Lives at `sanity-ui-compat/` as a plain directory (like `sanity-detect-languages` and
+`sanity-order-schema`), so it needs no new GitHub repo.
+
+### Why it exists — the trap
+`@sanity/ui` v4 and `@sanity/icons` v5 emptied their barrels, but **still declare the removed
+names in their `.d.ts` typed `never`**. A named import therefore passes `tsc`, passes `tsup`,
+and dies at runtime. The subpath form (`@sanity/ui/tooltip`) does not exist on v2/v3, so
+neither import shape works across the range. Reading the installed namespace at runtime is the
+only shape that links across v2 → v4 — it is not a stylistic choice.
+
+**A green build proves nothing here.** Use `npm run probe` (see below).
+
+### Origin
+~80% is `deploy-vercel-from-sanity/src/compat/` copied verbatim (`resolve.ts`, `domFallback`/
+`primitive`, `tooltip.tsx`, `code.tsx`, `toast.tsx`, `ActionMenu`). That plugin shipped the
+pattern first in 1.2.0; this generalises it. It should adopt this package and delete its local
+copy — that migration is also the cheapest validation, since it is a known-good consumer.
+
+### What was added beyond the reference
+- Composable `Menu`/`MenuButton`/`MenuItem` trio — 17 plugins write menus as nested JSX and
+  cannot use the declarative `ActionMenu` without a rewrite. The fallback drives focus by
+  querying live DOM for `[role="menuitem"]`, **deliberately not** by child registration:
+  registration order is mount order, which diverges from visual order the moment a child is
+  conditional or fragment-wrapped, and the symptom is arrow keys skipping a row.
+- `Progress` — owned outright, see latent bugs below.
+- Grid/Badge/Inline prop translation, `Checkbox`/`Radio`/`TextArea`/`Container`, `Autocomplete`.
+
+### The rename is far wider than Stack
+v4 carries **20** `space?: never` tombstones and ignores the old names at runtime rather than
+warning. Measured call sites across this monorepo: `Stack space` **298**, `Grid columns` **48**,
+`Badge mode` **12** (removed outright, not renamed), `Inline space` **5**. Guessing wrong
+collapses layout silently. Pass the OLD names to this package; it translates per major.
+
+### Two pre-existing bugs found while verifying
+- **`Progress` has never existed in `@sanity/ui`** — absent from 2.8.9, 3.1.14 and 4.0.5.
+  `sanity-delete-unused-assets` and `sanity-export-data` both import and render it
+  conditionally, so it only crashes once a scan actually runs. Compat now ships a real one.
+- **`DuplicateIcon` has never existed in `@sanity/icons`** — absent from v3.8.0's named exports
+  and v5.2.1's 236-key symbol map. `sanity-duplicate-and-rename` has been rendering a blank.
+  Mapped to `copy` (chosen over `documents`/`stack`, which read as "several documents").
+
+### Verified — and the limit of that
+`npm run probe` resolves every export against the INSTALLED majors. Against ui 4.0.5 +
+icons 5.2.1: `STACK_USES_GAP = true`, zero primitives fell back to DOM, 14/14 wrappers present,
+zero icons hit `MissingIcon`, all 43 symbols present in the map. Re-run on every new major.
+
+**Resolution is not rendering.** The probe proves names bind; it does not prove a tooltip
+positions or the fallback menu traps focus. That needs `test-studio` on v6.
+
+### Packaging gotchas hit
+- `"type": "module"` flips tsup's output naming (`index.js` becomes ESM, CJS becomes
+  `index.cjs`), silently breaking an `exports` map written for the `.js`/`.mjs` layout. Removed
+  it to match the rest of the suite. The build succeeded while shipping a broken package.
+- Exact-string externals are fine *here* because this package never imports a subpath. **Any
+  plugin that does import a subpath must extend its own tsup externals** — esbuild matches
+  externals exactly, so `@sanity/ui/tooltip` would be bundled, duplicating the ui runtime and
+  breaking theme/portal context.
+
+### Adoption plan (none of it done yet)
+Take it as a plain **`dependency`, not a peer** — it never bundles `@sanity/ui`, so duplicates
+are benign, and per-plugin pinning makes the version-bump storm lazy instead of mandatory.
+Order: `deploy-vercel-from-sanity` (delete its local copy, validates the package) →
+`sanity-font-uploader` (94 JS files, zero TS, largest surface, proves `.d.ts`-only ergonomics)
+→ the rest. Stay on 0.x until the trio and `Progress` have run in a real Studio.
+
+Full per-plugin audit with file:line risk notes lives in the workflow output referenced from
+the session; the two heaviest surfaces are `sanity-font-uploader` (27 ui / 14 icons files) and
+`sanity-type-foundry-utilities` (12 / 11). Both store icons as **values** (`icon: TrashIcon`,
+a `UTILITIES_MENU` registry typed `React.ComponentType`) — that needs wrapper components, not
+an import swap, and is the reason this is not a mechanical sweep.
+
+## sanity-font-manager 2.11.8 — Detect OTF fix (2026-07-29)
 
 ## sanity-font-manager 2.11.8 — Detect OTF fix (2026-07-29)
 

@@ -1,0 +1,66 @@
+{
+  "name": "@liiift-studio/sanity-ui-compat",
+  "version": "0.1.0",
+  "description": "Version-agnostic access to @sanity/ui and @sanity/icons across Studio v3 to v6",
+  "license": "UNLICENSED",
+  "private": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "default": "./dist/index.mjs"
+    },
+    "./icons": {
+      "import": {
+        "types": "./dist/icons.d.mts",
+        "default": "./dist/icons.mjs"
+      },
+      "require": {
+        "types": "./dist/icons.d.ts",
+        "default": "./dist/icons.js"
+      },
+      "default": "./dist/icons.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/toast*"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "probe": "node scripts/probe-resolution.mjs"
+  },
+  "keywords": [
+    "sanity",
+    "sanity-ui",
+    "compat"
+  ],
+  "peerDependencies": {
+    "@sanity/icons": ">=2 <6",
+    "@sanity/ui": ">=2 <5",
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@sanity/icons": "^5",
+    "@sanity/ui": "^4",
+    "@types/react": "^19",
+    "react": "^19",
+    "tsup": "^8",
+    "typescript": "^5"
+  }
+}
