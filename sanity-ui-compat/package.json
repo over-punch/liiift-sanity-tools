@@ -65,5 +65,10 @@
     "tsup": "^8",
     "typescript": "^5",
     "react-dom": "^19"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liiift-Studio/liiift-sanity-tools.git",
+    "directory": "sanity-ui-compat"
   }
 }

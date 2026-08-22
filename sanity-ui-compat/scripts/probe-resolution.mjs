@@ -3,6 +3,16 @@ import * as icons from '../dist/icons.mjs'
 import * as UI from '@sanity/ui'
 import * as ICONS from '@sanity/icons'
 
+/*
+ * Failure count, so this script can exit non-zero.
+ *
+ * An earlier version only printed. `npm run verify` chains its steps with `&&`, so a
+ * probe reporting a missing export or a dead icon symbol still exited 0 and the chain
+ * carried on reporting success — the exact failure this script exists to catch was the
+ * one it could not fail on.
+ */
+let failures = 0
+
 const name = c => (c && (c.displayName || c.name)) || String(c)
 const isFallback = c => name(c).startsWith('SanityUiFallback')
 
@@ -18,12 +28,13 @@ const WRAPPED = ['Stack','Inline','Grid','Badge','Tooltip','Code','Menu','MenuBu
   'ActionMenu','Progress','Autocomplete','useToast','ToastViewport']
 console.log('wrapper exports present:', WRAPPED.filter(k => compat[k]).length + '/' + WRAPPED.length)
 const missingW = WRAPPED.filter(k => !compat[k])
-if (missingW.length) console.log('  MISSING:', missingW.join(', '))
+if (missingW.length) { console.log('  MISSING:', missingW.join(', ')); failures += missingW.length }
 
 const iconNames = Object.keys(icons).filter(k => k.endsWith('Icon'))
 const missing = iconNames.filter(k => name(icons[k]) === 'MissingIcon')
 console.log('\nicons exported:', iconNames.length)
 console.log('icons resolving to MissingIcon (BAD SYMBOL):', missing.length ? missing.join(', ') : 'none')
+failures += missing.length
 
 // Cross-check every symbol in the table against v5's real map.
 const map = ICONS.icons || {}
@@ -32,4 +43,8 @@ if (Object.keys(map).length) {
   const rows = [...src.matchAll(/resolveIcon\('(\w+)',\s*'([a-z0-9-]+)'\)/g)]
   const bad = rows.filter(([,,sym]) => !(sym in map))
   console.log('symbol table rows:', rows.length, '| symbols absent from v5 map:', bad.length ? bad.map(r=>r[1]).join(', ') : 'none')
+  failures += bad.length
 }
+
+console.log(failures ? `\n${failures} PROBE FAILURE(S)` : '\nprobe clean')
+process.exit(failures ? 1 : 0)
