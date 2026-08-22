@@ -4,7 +4,7 @@
 [![Sanity Studio](https://img.shields.io/badge/Sanity%20Studio-v3%20%C2%B7%20v4%20%C2%B7%20v5%20%C2%B7%20v6-f03e2f)](#compatibility)
 [![@sanity/ui](https://img.shields.io/badge/%40sanity%2Fui-2%20%C2%B7%203%20%C2%B7%204-blue)](#compatibility)
 [![runtime deps](https://img.shields.io/badge/runtime%20deps-0-brightgreen)](#compatibility)
-[![license](https://img.shields.io/badge/license-UNLICENSED-lightgrey)](#license)
+[![license](https://img.shields.io/badge/license-MIT-blue)](#license)
 
 Version-agnostic access to `@sanity/ui` and `@sanity/icons` across Sanity Studio v3–v6.
 
@@ -389,8 +389,14 @@ If you are adding a new plugin to that suite: import UI from here, not from
 
 ## License
 
-`UNLICENSED`. Published publicly on npm so the plugin suite can install it, not as an
-invitation to depend on it — the API is `0.x` and moves with the suite's needs.
+[MIT](LICENSE).
+
+The problem this solves is not specific to one foundry — any plugin author supporting
+more than one Sanity Studio major hits the same emptied barrels and the same `never`
+tombstones. Use it freely.
+
+Do note the API is still `0.x` and moves with the suite's needs; pin a version if that
+matters to you.
 
 **Repository:** [Liiift-Studio/liiift-sanity-tools](https://github.com/Liiift-Studio/liiift-sanity-tools)
 · package path `sanity-ui-compat/`

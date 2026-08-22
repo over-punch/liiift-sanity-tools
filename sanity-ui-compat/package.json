@@ -1,8 +1,8 @@
 {
   "name": "@liiift-studio/sanity-ui-compat",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Version-agnostic access to @sanity/ui and @sanity/icons across Studio v3 to v6",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -33,7 +33,8 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE"
   ],
   "sideEffects": [
     "**/toast*"
