@@ -1,6 +1,6 @@
 {
   "name": "@liiift-studio/sanity-detect-languages",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Sanity Studio document action that detects the languages a typeface supports from its fonts' character sets, using bundled Hyperglot data",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

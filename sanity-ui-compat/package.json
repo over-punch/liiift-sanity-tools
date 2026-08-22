@@ -1,6 +1,6 @@
 {
   "name": "@liiift-studio/sanity-ui-compat",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Version-agnostic access to @sanity/ui and @sanity/icons across Studio v3 to v6",
   "license": "UNLICENSED",
   "private": false,
