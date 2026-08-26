@@ -1,0 +1,68 @@
+{
+  "name": "@liiift-studio/sanity-visitor-insights",
+  "version": "0.1.0",
+  "description": "Visitor-behaviour analytics for type-foundry Sanity Studios — GA4, Vercel and order data reconciled honestly",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "sanity",
+    "sanity-studio",
+    "analytics",
+    "ga4",
+    "vercel-analytics",
+    "foundry",
+    "typeface"
+  ],
+  "author": "Quinn Keaveney <quinn@liiift.studio>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Liiift-Studio/sanity-visitor-insights.git"
+  },
+  "peerDependencies": {
+    "@sanity/ui": ">=2 <5",
+    "react": ">=18",
+    "sanity": ">=3 <7"
+  },
+  "peerDependenciesMeta": {
+    "@sanity/ui": {
+      "optional": false
+    }
+  },
+  "dependencies": {
+    "@liiift-studio/sanity-ui-compat": "^0.1.4"
+  },
+  "devDependencies": {
+    "@sanity/ui": "^4",
+    "@types/react": "^19.2.14",
+    "react": "^19.2.5",
+    "sanity": "^3.99.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^4.1.5"
+  }
+}
