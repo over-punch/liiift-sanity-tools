@@ -61,3 +61,6 @@
 [submodule "sanity-font-uploader"]
 	path = sanity-font-uploader
 	url = https://github.com/Liiift-Studio/sanity-font-manager.git
+[submodule "sanity-visitor-insights"]
+	path = sanity-visitor-insights
+	url = https://github.com/Liiift-Studio/sanity-visitor-insights.git
