@@ -1,0 +1,61 @@
+{
+	"name": "@liiift-studio/sanity-backup-monitor",
+	"version": "1.0.0",
+	"description": "Sanity Studio panel showing backup health across foundry repos, with on-demand triggering",
+	"license": "UNLICENSED",
+	"publishConfig": {
+		"access": "public"
+	},
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"default": "./dist/index.mjs"
+		},
+		"./package.json": "./package.json"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist",
+		"proxy",
+		"README.md"
+	],
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit -p tsconfig.json",
+		"prepublishOnly": "npm run typecheck && npm test && npm run build"
+	},
+	"dependencies": {
+		"@liiift-studio/sanity-ui-compat": "^0.1.4"
+	},
+	"peerDependencies": {
+		"@sanity/icons": ">=2 <6",
+		"@sanity/ui": ">=2 <5",
+		"react": ">=18",
+		"react-dom": ">=18",
+		"sanity": ">=3.30 <7"
+	},
+	"devDependencies": {
+		"@sanity/icons": "^5",
+		"@sanity/ui": "^4",
+		"@types/react": "^19",
+		"react": "^19",
+		"react-dom": "^19",
+		"sanity": "^6",
+		"styled-components": "^6.5.3",
+		"tsup": "^8",
+		"typescript": "^5",
+		"vitest": "^3.2.7"
+	},
+	"keywords": ["sanity", "sanity-plugin", "backup", "liiift"]
+}
