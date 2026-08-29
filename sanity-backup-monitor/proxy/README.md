@@ -27,13 +27,27 @@ on the allowlist.
 
 ## Setup
 
-1. Copy this whole `proxy/` directory into your app.
-2. Put `nextjs-app-router/route.ts` at `app/api/backup-proxy/[...path]/route.ts`.
-3. Set the variables in `.env.example`.
-4. Point the plugin at it with `proxyUrl` and a matching `statusKey`.
+Pick the adapter that matches your app.
 
-`core.ts` is framework-agnostic — the Next.js file is a thin adapter, and another
-framework needs only an equivalent one.
+**Pages Router, or any site without TypeScript configured** — use this one. It imports
+the *compiled* core from the package, so it works in a plain JavaScript site with no
+tsconfig and no typescript dependency (all three foundry sites are in this category).
+
+```
+cp proxy/nextjs-pages-router/backup-proxy.js \
+   pages/api/backup-proxy/[...path].js
+```
+
+**App Router** — copy the whole `proxy/` directory into your app and put
+`nextjs-app-router/route.ts` at `app/api/backup-proxy/[...path]/route.ts`. That adapter
+imports `../core` relatively, so it needs the TypeScript source alongside it.
+
+Then set the variables in `.env.example` and point the plugin at it with `proxyUrl` and
+a matching `statusKey`.
+
+`core.ts` is framework-agnostic — both Next.js files are thin adapters, and another
+framework needs only an equivalent one. It is also published as
+`@liiift-studio/sanity-backup-monitor/proxy` for importing directly.
 
 ## Endpoints
 
