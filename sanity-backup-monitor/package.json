@@ -1,6 +1,6 @@
 {
 	"name": "@liiift-studio/sanity-backup-monitor",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Sanity Studio panel showing backup health across foundry repos, with on-demand triggering",
 	"license": "UNLICENSED",
 	"publishConfig": {

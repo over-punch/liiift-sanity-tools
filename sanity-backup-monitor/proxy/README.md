@@ -5,14 +5,19 @@ strictly private, and recommended everywhere.
 
 ## Why it exists
 
-In `direct` mode the Studio calls GitHub itself, which means the GitHub token lives in
-the Studio's configuration. Sanity has no per-document access control, so anything in
-the dataset is readable by everyone who can read the dataset — and if the dataset is
-public, by anyone at all. Hiding the tool from viewers changes nothing: the token is
-still readable, and a token that can dispatch workflows can do considerably more than
-start a backup.
+In `direct` mode the Studio calls GitHub itself, which means the token is compiled into
+the Studio bundle. A hosted Studio is behind login, so this is not public exposure — but
+anyone who can open the Studio, Viewers included, can read the token out of the bundle
+with devtools. Hiding the tool from viewers changes nothing.
 
-Proxy mode moves the token to a server you control.
+For a read-only status panel that is usually an acceptable trade. It stops being
+acceptable once the token can **dispatch workflows**, which is considerably more power
+than starting a backup.
+
+Proxy mode moves the token to a server you control. Note the proxy needs a server — a
+Sanity Studio is a static client-side bundle and has nowhere to keep a secret, so this
+runs wherever you already have one (a Next.js API route, a serverless function, a
+worker).
 
 ## How it works
 

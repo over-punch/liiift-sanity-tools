@@ -71,19 +71,34 @@ fortnight.
 
 `assessHealth` is exported and pure, so it can be reused or tested independently.
 
-## Use proxy mode
+## Direct mode vs proxy mode
 
-Sanity has **no per-document access control**. A GitHub token stored in the dataset is
-readable by everyone who can read the dataset — and on a public dataset, by anyone at
-all. Restricting the tool to editors does not help: a viewer can read the token and use
-it directly.
+A `token` passed to this plugin is compiled into the Studio's JavaScript bundle. On a
+hosted Studio that bundle sits behind login, so it is not readable by the public — but
+it *is* readable, via devtools, by **anyone who can open the Studio**, including Viewers.
+Restricting the tool to editors does not change that.
 
-Proxy mode keeps the token on a server you control. The Studio sends an opaque key; the
-proxy resolves it against a server-side allowlist and calls GitHub itself, so the Studio
-cannot reach a repository that is not on that list even if its bundle is fully readable.
+So the choice follows from what the token can do:
 
-Direct mode exists for local development. The panel shows a warning banner whenever it
-is active with a token.
+| | Token scope | If a Viewer extracts it |
+| --- | --- | --- |
+| **Status only** | `Actions: read` | They can read workflow run history. Minor. |
+| **With triggering** | `Actions: read and write` | They can dispatch workflows on those repos. Not minor. |
+
+**Direct mode is reasonable for a status-only panel** with a read-only, fine-grained
+token. Set `BACKUP_ALLOW_TRIGGER` aside entirely and simply do not pass a write-scoped
+token; the trigger button will return 403.
+
+**Use proxy mode once you want the trigger button.** The token stays on a server you
+control, the Studio sends only an opaque key, and the proxy resolves it against a
+server-side allowlist — so a fully readable bundle still cannot reach a repository that
+is not on that list.
+
+Separately: if you store a token in a Sanity *document* rather than plugin config, the
+dataset ACL governs it, and on a public dataset that means anyone at all. This plugin
+does not do that, but it is worth knowing the distinction.
+
+The panel shows a warning banner whenever direct mode is active with a token.
 
 See [`proxy/README.md`](./proxy/README.md) for setup.
 
