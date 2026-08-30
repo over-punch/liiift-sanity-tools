@@ -5,6 +5,7 @@ import { visionTool } from '@sanity/vision';
 
 // --- definePlugin factories ---
 import { vercelDeploy } from '../deploy-vercel-from-sanity/src';
+import { backupMonitor } from '../sanity-backup-monitor/src';
 import { liiiftVersionBadge } from '../sanity-studio-version-badge/src';
 
 // --- Utilities desk (matches foundry sites) ---
@@ -32,6 +33,14 @@ export default defineConfig({
 	dataset: process.env.SANITY_STUDIO_DATASET || 'production',
 
 	plugins: [
+		backupMonitor({
+			token: process.env.SANITY_STUDIO_BACKUP_GH_TOKEN,
+			targets: [
+				{ label: 'MCKL', owner: 'Liiift-Studio', repo: 'mckl-cms', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
+				{ label: 'Darden', owner: 'Liiift-Studio', repo: 'Darden-Studio', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
+				{ label: 'TDF', owner: 'Liiift-Studio', repo: 'the-designers-foundry', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
+			],
+		}),
 		structureTool(),
 		visionTool(),
 		vercelDeploy(),
