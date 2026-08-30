@@ -30,7 +30,16 @@ export function TargetCard(props: { target: BackupTarget }) {
 	const [loading, setLoading] = useState(true)
 	const [triggering, setTriggering] = useState(false)
 
+	// True when no credential is configured yet, which is the state a Studio is in
+	// between installing the plugin and someone adding the token.
+	const unconfigured =
+		(config.mode === 'direct' && !config.token) || (config.mode === 'proxy' && !config.proxyUrl)
+
 	const load = useCallback(async () => {
+		if (unconfigured) {
+			setLoading(false)
+			return
+		}
 		setLoading(true)
 		setError(null)
 		try {
@@ -41,7 +50,7 @@ export function TargetCard(props: { target: BackupTarget }) {
 		} finally {
 			setLoading(false)
 		}
-	}, [config, target])
+	}, [config, target, unconfigured])
 
 	useEffect(() => {
 		void load()
@@ -88,7 +97,15 @@ export function TargetCard(props: { target: BackupTarget }) {
 					{health ? <HealthBadge level={health.level} /> : null}
 				</Flex>
 
-				{loading ? (
+				{unconfigured ? (
+					<Card padding={3} radius={2} tone="caution">
+						<Text size={1}>
+							{config.mode === 'direct'
+								? 'No GitHub token configured. Pass `token` to backupMonitor() with an Actions: read scoped fine-grained token.'
+								: 'No proxyUrl configured. Point backupMonitor() at your backup proxy.'}
+						</Text>
+					</Card>
+				) : loading ? (
 					<Flex align="center" gap={2}><Spinner muted /><Text size={1} muted>Loading runs…</Text></Flex>
 				) : error ? (
 					<Card padding={3} radius={2} tone="critical">
@@ -115,7 +132,7 @@ export function TargetCard(props: { target: BackupTarget }) {
 					</Stack>
 				)}
 
-				<Flex gap={2}>
+				<Flex gap={2} hidden={unconfigured}>
 					<Button
 						mode="ghost"
 						icon={RefreshIcon}
