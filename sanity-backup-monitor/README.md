@@ -106,6 +106,41 @@ is active, and a server-side proxy is the right answer if you want it in product
 A proxy implementation lives in `proxy/` in this repo but is **not published** and has
 not been hardened; see that directory's README before relying on it.
 
+## Restoring — rehearsed 2026-08-31
+
+The restore path below was executed end to end against Darden, into a throwaway
+dataset, and the throwaway deleted afterwards. `production` was never touched.
+
+```bash
+# 1. Download the artifact from the repo's Actions run, then:
+npx sanity@latest dataset create restore-check --project-id <id> --visibility private
+npx sanity@latest dataset import <backup>.tar.gz \
+  --dataset restore-check --project-id <id> \
+  --replace --allow-assets-in-different-dataset
+
+# 2. Verify the counts, then clean up
+npx sanity@latest dataset delete restore-check --project-id <id>
+```
+
+Use `--dataset`, not a positional argument — the CLI deprecated the positional form.
+
+**What it proved.** A 1.77 MB / 6,239-document backup imported in **1m 28s**, of which
+1m 11s was asset-document validation. Every count matched: 1,125 orders, 457 fonts,
+10 typefaces, 4,153 asset records. The tarball itself had no parse errors, no duplicate
+IDs, no missing `_id`/`_type`, and reconciled exactly against live — production's 6,707
+documents minus 13 `system.*` docs minus 455 created after the backup ran equals 6,239.
+
+**What it also proved, and this is the limitation.** Asset URLs in the restored dataset
+still read `.../files/<project>/production/...` — they point at the *source* dataset, not
+the restored one. They returned HTTP 200 only because `production` still existed. Restore
+into a project whose original dataset is gone and every asset reference is a 404. The
+documents, relationships and asset *metadata* all survive; the binaries do not. That is
+what the asset mirror is for.
+
+A note on the source data rather than the backup: Darden's dataset carries ~2,497
+references to documents that no longer exist. The backup reproduces them faithfully —
+they are dangling in production too.
+
 ## Testing
 
 ```bash
