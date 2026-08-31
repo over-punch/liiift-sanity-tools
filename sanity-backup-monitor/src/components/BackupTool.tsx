@@ -11,11 +11,11 @@ function EmptyState() {
 		<Card padding={4} radius={2} tone="caution">
 			<Stack space={3}>
 				<Text as="h2" size={2} weight="semibold">
-					No backup targets configured
+					Nothing is being checked yet
 				</Text>
 				<Text size={1}>
-					Pass <code>targets</code> to <code>backupMonitor()</code> in sanity.config, each with
-					an owner, repo and workflow filename.
+					No content has been set up for backup checking. Whoever looks after the site needs
+					to configure it.
 				</Text>
 			</Stack>
 		</Card>
@@ -69,8 +69,9 @@ export function BackupTool() {
 							Backups
 						</Text>
 						<Text size={1} muted>
-							Scheduled dataset backups. A backup that stops running fails silently, so this
-							panel surfaces staleness rather than waiting for someone to check Actions.
+							A copy of everything in this Studio is saved automatically, so it can be
+							restored if something goes wrong. This page tells you whether that is
+							actually happening.
 						</Text>
 					</Stack>
 

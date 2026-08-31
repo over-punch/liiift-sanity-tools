@@ -1,9 +1,10 @@
-// One repository's backup health, recent runs, and optional trigger button.
+// One repository's backup health, written for editors, with detail on request.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Spinner, Stack, Text, useToast } from '@liiift-studio/sanity-ui-compat'
 import { RefreshIcon, SyncIcon } from '@liiift-studio/sanity-ui-compat/icons'
 import { assessHealth, DEFAULT_INTERVAL_DAYS } from '../lib/health'
+import { plainEvent, plainOutcome, plainSummary } from '../lib/plainLanguage'
 import { fetchRuns, fetchState, triggerBackup } from '../lib/transport'
 import { useConfig } from '../config'
 import { ConclusionBadge, HealthBadge } from './StatusBadge'
@@ -21,6 +22,10 @@ function formatTime(iso: string): string {
 /**
  * Panel section for a single backup target.
  *
+ * Leads with a plain-language verdict because the audience is editors, not the
+ * person who configured this. Repo paths, workflow filenames and run history are
+ * real but secondary, so they sit behind a disclosure.
+ *
  * @param props.target - the repository to show
  */
 export function TargetCard(props: { target: BackupTarget }) {
@@ -32,6 +37,7 @@ export function TargetCard(props: { target: BackupTarget }) {
 	const [error, setError] = useState<string | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [triggering, setTriggering] = useState(false)
+	const [showDetail, setShowDetail] = useState(false)
 	// null means not checked or unavailable on this transport, not 'healthy'.
 	const [workflowState, setWorkflowState] = useState<string | null>(null)
 
@@ -45,8 +51,6 @@ export function TargetCard(props: { target: BackupTarget }) {
 		mounted.current = true
 		return () => {
 			mounted.current = false
-			// Without this, a dispatch's delayed refresh fires against an unmounted
-			// card, issuing an orphan request and setting state on a dead component.
 			if (refreshTimer.current) clearTimeout(refreshTimer.current)
 		}
 	}, [])
@@ -112,8 +116,6 @@ export function TargetCard(props: { target: BackupTarget }) {
 			toast.push({
 				status: 'error',
 				title: `Could not start backup for ${target.label}`,
-				// Only claim a token-scope problem when talking to GitHub directly; the
-				// proxy returns its own 403 when triggering is disabled server-side.
 				description:
 					config.mode === 'direct' && raw.includes('403')
 						? 'The token lacks Actions: write. Triggering needs it; reading run status does not.'
@@ -123,8 +125,6 @@ export function TargetCard(props: { target: BackupTarget }) {
 		}
 	}, [config, target, toast, load])
 
-	// Sorted for display so the list agrees with the badge, which assesses
-	// newest-first. Memoised so it is not redone on every unrelated re-render.
 	const ordered = useMemo(
 		() =>
 			[...(runs ?? [])].sort(
@@ -133,15 +133,28 @@ export function TargetCard(props: { target: BackupTarget }) {
 		[runs],
 	)
 
+	const intervalDays = target.expectedIntervalDays ?? DEFAULT_INTERVAL_DAYS
+
 	const health = useMemo(
-		() => (runs ? assessHealth(runs, target.expectedIntervalDays ?? DEFAULT_INTERVAL_DAYS) : null),
-		[runs, target.expectedIntervalDays],
+		() => (runs ? assessHealth(runs, intervalDays) : null),
+		[runs, intervalDays],
 	)
 
-	// A stale or broken backup gets a coloured card, so it reads at a glance
-	// rather than needing to be looked for.
-	const tone =
-		health?.level === 'critical' ? 'critical' : health?.level === 'warning' ? 'caution' : 'default'
+	const summary = useMemo(
+		() => (health ? plainSummary(health, intervalDays, workflowState) : null),
+		[health, intervalDays, workflowState],
+	)
+
+	// A stale or broken backup gets a coloured card, so it reads at a glance.
+	// A disabled workflow is always critical regardless of run history.
+	const disabled = Boolean(workflowState && workflowState !== 'active')
+	const tone = disabled
+		? 'critical'
+		: health?.level === 'critical'
+			? 'critical'
+			: health?.level === 'warning'
+				? 'caution'
+				: 'default'
 
 	const headingId = `backup-${target.owner}-${target.repo}-${target.workflow}`
 
@@ -150,14 +163,9 @@ export function TargetCard(props: { target: BackupTarget }) {
 			<Stack space={4}>
 				<Flex align="center" gap={3}>
 					<Box flex={1}>
-						<Stack space={2}>
-							<Text as="h3" id={headingId} size={2} weight="semibold">
-								{target.label}
-							</Text>
-							<Text size={1} muted>
-								{target.owner}/{target.repo} · {target.workflow}
-							</Text>
-						</Stack>
+						<Text as="h3" id={headingId} size={2} weight="semibold">
+							{target.label}
+						</Text>
 					</Box>
 					{health ? <HealthBadge health={health} /> : null}
 				</Flex>
@@ -165,102 +173,117 @@ export function TargetCard(props: { target: BackupTarget }) {
 				{unconfigured ? (
 					<Card padding={3} radius={2} tone="caution">
 						<Text size={1}>
-							{config.mode === 'direct' ? (
-								<>
-									No GitHub token configured. Pass <code>token</code> to <code>backupMonitor()</code>{' '}
-									with a fine-grained token scoped to Actions: read on this repository.
-								</>
-							) : (
-								<>
-									No <code>proxyUrl</code> configured. Point <code>backupMonitor()</code> at your
-									backup proxy.
-								</>
-							)}
+							Backup checking is not set up yet for this content. Whoever looks after the site
+							needs to finish configuring it.
 						</Text>
 					</Card>
 				) : (
 					<Stack space={3}>
 						{/* Announced so a screen reader hears the outcome of a refresh. */}
 						<div role="status" aria-live="polite">
-							{loading ? (
+							{loading && !summary ? (
 								<Flex align="center" gap={2}>
 									<Spinner muted />
 									<Text size={1} muted>
-										Loading runs…
+										Checking…
 									</Text>
 								</Flex>
-							) : health ? (
-								<Text size={1}>{health.message}</Text>
+							) : summary ? (
+								<Stack space={2}>
+									<Text size={2} weight="semibold">
+										{summary.headline}
+									</Text>
+									<Text size={1}>{summary.detail}</Text>
+								</Stack>
 							) : null}
 						</div>
 
-							{workflowState && workflowState !== 'active' ? (
-							<Card padding={3} radius={2} tone="critical" role="alert">
-								<Text size={1}>
-									<strong>This workflow is disabled ({workflowState}).</strong>{' '}
-									{workflowState === 'disabled_inactivity'
-										? 'GitHub disables scheduled workflows after 60 days of repository inactivity. Re-enable it in the Actions tab; no backups are running.'
-										: 'No backups are running until it is re-enabled in the Actions tab.'}
-								</Text>
+						{summary?.action ? (
+							<Card padding={3} radius={2} tone="caution">
+								<Text size={1}>{summary.action}</Text>
 							</Card>
 						) : null}
 
 						{error ? (
 							<Card padding={3} radius={2} tone="critical">
 								<Text size={1}>
-									<strong>Error:</strong> {error}
-									{runs ? ' — showing the last successful fetch.' : ''}
+									Could not check the backup status just now
+									{runs ? ' — showing the last result we have.' : '.'}
 								</Text>
 							</Card>
 						) : null}
-
-						<Stack space={2}>
-							{ordered.map(run => (
-								<Flex key={run.id} align="center" gap={3}>
-									<Box flex={1}>
-										<Text size={1} muted>
-											{/* Linked so a failed run is one click from its logs. */}
-											<a href={run.htmlUrl} target="_blank" rel="noreferrer">
-												#{run.runNumber}
-											</a>{' '}
-											· {run.event} · {formatTime(run.createdAt)}
-										</Text>
-									</Box>
-									<ConclusionBadge conclusion={run.conclusion} />
-								</Flex>
-							))}
-							{runs && ordered.length === 0 ? (
-								<Text size={1} muted>
-									No runs recorded yet.
-								</Text>
-							) : null}
-						</Stack>
 					</Stack>
 				)}
 
-				{/* Conditional render rather than the hidden attribute: hidden depends on a
-				    :not([hidden]) guard in the UI library and leaves controls in the DOM. */}
 				{unconfigured ? null : (
-					<Flex gap={2}>
-						<Button
-							mode="ghost"
-							icon={RefreshIcon}
-							text="Refresh"
-							aria-label={`Refresh ${target.label}`}
-							onClick={() => void load()}
-							disabled={loading || triggering}
-						/>
-						{config.allowTrigger ? (
+					<Stack space={3}>
+						<Flex gap={2} align="center">
 							<Button
-								tone="primary"
-								icon={SyncIcon}
-								text={triggering ? 'Starting…' : 'Back up now'}
-								aria-label={`Back up ${target.label} now`}
-								onClick={() => void onTrigger()}
-								disabled={triggering || loading}
+								mode="bleed"
+								text={showDetail ? 'Hide technical details' : 'Show technical details'}
+								aria-expanded={showDetail}
+								onClick={() => setShowDetail(v => !v)}
 							/>
+						</Flex>
+
+						{showDetail ? (
+							<Stack space={3}>
+								<Text size={1} muted>
+									{target.owner}/{target.repo} · {target.workflow}
+									{workflowState ? ` · workflow ${workflowState}` : ''}
+								</Text>
+
+								{error ? (
+									<Text size={1} muted>
+										{error}
+									</Text>
+								) : null}
+
+								<Stack space={2}>
+									{ordered.map(run => (
+										<Flex key={run.id} align="center" gap={3}>
+											<Box flex={1}>
+												<Text size={1} muted>
+													{/* Linked so a failed run is one click from its logs. */}
+													<a href={run.htmlUrl} target="_blank" rel="noreferrer">
+														#{run.runNumber}
+													</a>{' '}
+													· {plainEvent(run.event)} · {formatTime(run.createdAt)}
+												</Text>
+											</Box>
+											<ConclusionBadge conclusion={run.conclusion} />
+										</Flex>
+									))}
+									{runs && ordered.length === 0 ? (
+										<Text size={1} muted>
+											No runs recorded yet.
+										</Text>
+									) : null}
+								</Stack>
+
+								<Flex gap={2}>
+									<Button
+										mode="ghost"
+										icon={RefreshIcon}
+										text="Check again"
+										aria-label={`Check ${target.label} again`}
+										onClick={() => void load()}
+										disabled={loading || triggering}
+									/>
+									{config.allowTrigger ? (
+										<Button
+											tone="primary"
+											icon={SyncIcon}
+											text={triggering ? 'Starting…' : 'Back up now'}
+											aria-label={`Back up ${target.label} now`}
+											onClick={() => void onTrigger()}
+											disabled={triggering || loading}
+										/>
+									) : null}
+								</Flex>
+							</Stack>
 						) : null}
-					</Flex>
+					</Stack>
 				)}
 			</Stack>
 		</Card>
