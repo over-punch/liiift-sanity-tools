@@ -100,9 +100,17 @@ export function TargetCard(props: { target: BackupTarget }) {
 				{unconfigured ? (
 					<Card padding={3} radius={2} tone="caution">
 						<Text size={1}>
-							{config.mode === 'direct'
-								? 'No GitHub token configured. Pass `token` to backupMonitor() with an Actions: read scoped fine-grained token.'
-								: 'No proxyUrl configured. Point backupMonitor() at your backup proxy.'}
+							{config.mode === 'direct' ? (
+								<>
+									No GitHub token configured. Pass <code>token</code> to <code>backupMonitor()</code>{' '}
+									with a fine-grained token scoped to Actions: read on this repository.
+								</>
+							) : (
+								<>
+									No <code>proxyUrl</code> configured. Point <code>backupMonitor()</code> at your
+									backup proxy.
+								</>
+							)}
 						</Text>
 					</Card>
 				) : loading ? (
