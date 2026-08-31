@@ -50,6 +50,7 @@ export default defineConfig({
 | `statusKey` | Shared key the proxy checks |
 | `token` | GitHub token, **direct mode only** — see the warning below |
 | `runLimit` | Runs listed per target (default 5) |
+| `allowTrigger` | Show the "Back up now" button (default **false**) |
 | `name` / `title` / `icon` | Studio tool identity |
 
 Each target takes `label`, `owner`, `repo`, `workflow`, and optionally `ref`
@@ -88,6 +89,10 @@ So the choice follows from what the token can do:
 **Direct mode is reasonable for a status-only panel** with a read-only, fine-grained
 token. Set `BACKUP_ALLOW_TRIGGER` aside entirely and simply do not pass a write-scoped
 token; the trigger button will return 403.
+
+**The trigger button is off by default.** Set `allowTrigger: true` to show it. It calls
+`workflow_dispatch`, which needs `Actions: write` — with a read-scoped token the button
+would simply 403, so it is hidden rather than shown and failing.
 
 **Use proxy mode once you want the trigger button.** The token stays on a server you
 control, the Studio sends only an opaque key, and the proxy resolves it against a

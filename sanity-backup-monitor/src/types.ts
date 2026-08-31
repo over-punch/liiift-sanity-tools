@@ -50,6 +50,15 @@ export interface BackupMonitorConfig {
 	token?: string
 	/** Number of runs to list per target. Defaults to 5. */
 	runLimit?: number
+	/**
+	 * Show the "Back up now" button. Defaults to **false**.
+	 *
+	 * Triggering needs `Actions: write`, a meaningfully larger grant than the
+	 * `Actions: read` a status panel needs - a write token extracted from the
+	 * bundle can dispatch workflows. Left off, the panel is read-only and the
+	 * button is hidden rather than shown and failing with a 403.
+	 */
+	allowTrigger?: boolean
 }
 
 /** Resolved config with defaults applied. */
@@ -57,6 +66,7 @@ export interface ResolvedConfig extends BackupMonitorConfig {
 	mode: BackupMonitorMode
 	targets: BackupTarget[]
 	runLimit: number
+	allowTrigger: boolean
 }
 
 /** GitHub Actions run conclusion, as the panel cares about it. */

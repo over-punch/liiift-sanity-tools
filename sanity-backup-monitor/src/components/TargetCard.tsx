@@ -64,10 +64,15 @@ export function TargetCard(props: { target: BackupTarget }) {
 			// GitHub needs a moment before the new run appears in the list.
 			setTimeout(() => void load(), 4000)
 		} catch (err) {
+			const raw = err instanceof Error ? err.message : String(err)
 			toast.push({
 				status: 'error',
 				title: `Could not start backup for ${target.label}`,
-				description: err instanceof Error ? err.message : String(err),
+				// A 403 here is almost always a read-scoped token, which is the
+				// recommended setup - say so rather than showing a bare status code.
+				description: raw.includes('403')
+					? 'The token lacks Actions: write. Triggering needs it; reading run status does not.'
+					: raw,
 			})
 		} finally {
 			setTriggering(false)
@@ -148,13 +153,15 @@ export function TargetCard(props: { target: BackupTarget }) {
 						onClick={() => void load()}
 						disabled={loading}
 					/>
-					<Button
-						tone="primary"
-						icon={SyncIcon}
-						text={triggering ? 'Starting…' : 'Back up now'}
-						onClick={() => void onTrigger()}
-						disabled={triggering || loading}
-					/>
+					{config.allowTrigger ? (
+						<Button
+							tone="primary"
+							icon={SyncIcon}
+							text={triggering ? 'Starting…' : 'Back up now'}
+							onClick={() => void onTrigger()}
+							disabled={triggering || loading}
+						/>
+					) : null}
 				</Flex>
 			</Stack>
 		</Card>

@@ -24,6 +24,8 @@ export function resolveConfig(options?: BackupMonitorConfig | void): ResolvedCon
 		mode: config.mode ?? (config.proxyUrl ? 'proxy' : 'direct'),
 		targets: config.targets ?? [],
 		runLimit: config.runLimit ?? DEFAULT_RUN_LIMIT,
+		// Off by default: triggering needs Actions:write, a status panel does not.
+		allowTrigger: config.allowTrigger ?? false,
 	}
 }
 
