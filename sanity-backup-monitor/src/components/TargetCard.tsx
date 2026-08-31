@@ -27,9 +27,11 @@ function formatTime(iso: string): string {
  * real but secondary, so they sit behind a disclosure.
  *
  * @param props.target - the repository to show
+ * @param props.showLabel - render the target's name; redundant when it is the
+ *   only card, because the workspace name above it already says the same thing
  */
-export function TargetCard(props: { target: BackupTarget }) {
-	const { target } = props
+export function TargetCard(props: { target: BackupTarget; showLabel?: boolean }) {
+	const { target, showLabel = true } = props
 	const config = useConfig()
 	const toast = useToast()
 
@@ -161,14 +163,21 @@ export function TargetCard(props: { target: BackupTarget }) {
 	return (
 		<Card padding={4} radius={2} shadow={1} tone={tone} as="section" aria-labelledby={headingId}>
 			<Stack space={4}>
-				<Flex align="center" gap={3}>
-					<Box flex={1}>
-						<Text as="h3" id={headingId} size={2} weight="semibold">
-							{target.label}
-						</Text>
-					</Box>
-					{health ? <HealthBadge health={health} /> : null}
-				</Flex>
+				{showLabel ? (
+					<Flex align="center" gap={3}>
+						<Box flex={1}>
+							<Text as="h3" id={headingId} size={2} weight="semibold">
+								{target.label}
+							</Text>
+						</Box>
+						{health ? <HealthBadge health={health} /> : null}
+					</Flex>
+				) : (
+					// Keeps an accessible name for the section without showing it twice.
+					<span id={headingId} hidden>
+						{target.label}
+					</span>
+				)}
 
 				{unconfigured ? (
 					<Card padding={3} radius={2} tone="caution">
@@ -190,9 +199,14 @@ export function TargetCard(props: { target: BackupTarget }) {
 								</Flex>
 							) : summary ? (
 								<Stack space={2}>
-									<Text size={2} weight="semibold">
-										{summary.headline}
-									</Text>
+									<Flex align="center" gap={3}>
+										<Box flex={1}>
+											<Text size={2} weight="semibold">
+												{summary.headline}
+											</Text>
+										</Box>
+										{!showLabel && health ? <HealthBadge health={health} /> : null}
+									</Flex>
 									<Text size={1}>{summary.detail}</Text>
 								</Stack>
 							) : null}

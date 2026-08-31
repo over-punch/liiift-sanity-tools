@@ -1,6 +1,6 @@
 // Studio tool: backup health for every configured repository.
 
-import { Box, Card, Container, Stack, Text, ToastViewport } from '@liiift-studio/sanity-ui-compat'
+import { Box, Card, Container, Flex, Stack, Text, ToastViewport } from '@liiift-studio/sanity-ui-compat'
 import { useConfig } from '../config'
 import { TargetCard } from './TargetCard'
 import type { BackupTarget } from '../types'
@@ -60,42 +60,49 @@ function targetKey(target: BackupTarget): string {
 export function BackupTool() {
 	const config = useConfig()
 
+	// With a single target the label just repeats the workspace name above it, so
+	// the card drops its own heading and the panel reads as one thing.
+	const showLabels = config.targets.length > 1
+
 	return (
-		<Container width={2}>
-			<Box padding={4}>
-				<Stack space={4}>
-					<Stack space={2}>
-						<Text as="h1" size={3} weight="semibold">
-							Backups
-						</Text>
-						<Text size={1} muted>
-							A copy of everything in this Studio is saved automatically, so it can be
-							restored if something goes wrong. This page tells you whether that is
-							actually happening.
-						</Text>
-					</Stack>
-
-					{config.mode === 'direct' && config.token && config.allowTrigger ? (
-						<TriggerTokenWarning />
-					) : null}
-
-					{config.targets.length === 0 ? (
-						<EmptyState />
-					) : (
-						<Stack space={4}>
-							{config.targets.map(target => (
-								<TargetCard key={targetKey(target)} target={target} />
-							))}
+		// Centred vertically so a short panel sits in the middle of a tall window
+		// rather than clinging to the top with a screen of empty space beneath it.
+		<Flex align="center" justify="center" style={{ minHeight: '100%' }}>
+			<Container width={2}>
+				<Box padding={4}>
+					<Stack space={4}>
+						<Stack space={2}>
+							<Text as="h1" size={3} weight="semibold">
+								Backups
+							</Text>
+							<Text size={1} muted>
+								A copy of everything in this Studio is saved automatically. This page shows
+								whether that is actually happening.
+							</Text>
 						</Stack>
-					)}
-				</Stack>
-			</Box>
+
+						{config.mode === 'direct' && config.token && config.allowTrigger ? (
+							<TriggerTokenWarning />
+						) : null}
+
+						{config.targets.length === 0 ? (
+							<EmptyState />
+						) : (
+							<Stack space={4}>
+								{config.targets.map(target => (
+									<TargetCard key={targetKey(target)} target={target} showLabel={showLabels} />
+								))}
+							</Stack>
+						)}
+					</Stack>
+				</Box>
+			</Container>
 			{/*
 			  Required on @sanity/ui v4+, where useToast is tombstoned off the barrel and
 			  the compat shim falls back to a local queue that renders nothing without a
 			  viewport. Without this every toast from this plugin is silently discarded.
 			*/}
 			<ToastViewport />
-		</Container>
+		</Flex>
 	)
 }
