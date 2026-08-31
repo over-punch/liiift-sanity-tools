@@ -24,8 +24,10 @@ function DirectModeWarning() {
 	return (
 		<Card padding={3} radius={2} tone="caution">
 			<Text size={1}>
-				Running in direct mode: the GitHub token is stored in the dataset and is readable by
-				everyone who can read it — on a public dataset, by anyone. Use proxy mode in production.
+				Direct mode: the token is compiled into the Studio bundle, so anyone who can open this
+				Studio can read it. That is acceptable for a token scoped to Actions: read on a single
+				repository — it reaches nothing a Studio user cannot already read. Use proxy mode if the
+				token can trigger workflows.
 			</Text>
 		</Card>
 	)
