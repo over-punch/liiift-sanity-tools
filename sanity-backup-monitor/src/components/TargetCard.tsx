@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Spinner, Stack, Text, useToast } from '@liiift-studio/sanity-ui-compat'
-import { RefreshIcon, SyncIcon } from '@liiift-studio/sanity-ui-compat/icons'
+import { ChevronDownIcon, ChevronRightIcon, RefreshIcon, SyncIcon } from '@liiift-studio/sanity-ui-compat/icons'
 import { assessHealth, DEFAULT_INTERVAL_DAYS } from '../lib/health'
 import { plainEvent, plainOutcome, plainSummary } from '../lib/plainLanguage'
 import { fetchRuns, fetchState, triggerBackup } from '../lib/transport'
@@ -207,7 +207,9 @@ export function TargetCard(props: { target: BackupTarget; showLabel?: boolean })
 										</Box>
 										{!showLabel && health ? <HealthBadge health={health} /> : null}
 									</Flex>
-									<Text size={1}>{summary.detail}</Text>
+									<Text size={1} muted>
+										{summary.detail}
+									</Text>
 								</Stack>
 							) : null}
 						</div>
@@ -234,6 +236,7 @@ export function TargetCard(props: { target: BackupTarget; showLabel?: boolean })
 						<Flex gap={2} align="center">
 							<Button
 								mode="bleed"
+								icon={showDetail ? ChevronDownIcon : ChevronRightIcon}
 								text={showDetail ? 'Hide technical details' : 'Show technical details'}
 								aria-expanded={showDetail}
 								onClick={() => setShowDetail(v => !v)}

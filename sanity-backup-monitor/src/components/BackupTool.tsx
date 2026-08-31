@@ -71,7 +71,7 @@ export function BackupTool() {
 			<Container width={2}>
 				<Box padding={4}>
 					<Stack space={4}>
-						<Stack space={2}>
+						<Stack space={3}>
 							<Text as="h1" size={3} weight="semibold">
 								Backups
 							</Text>
