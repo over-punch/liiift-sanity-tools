@@ -7,6 +7,9 @@ import type { BackupMonitorConfig, ResolvedConfig } from './types'
 /** Runs listed per target when not configured. */
 const DEFAULT_RUN_LIMIT = 5
 
+/** Poll interval when not configured: 5 minutes, in milliseconds. */
+const DEFAULT_REFRESH_MS = 5 * 60 * 1000
+
 /**
  * Apply defaults to plugin options.
  *
@@ -26,6 +29,7 @@ export function resolveConfig(options?: BackupMonitorConfig | void): ResolvedCon
 		runLimit: config.runLimit ?? DEFAULT_RUN_LIMIT,
 		// Off by default: triggering needs Actions:write, a status panel does not.
 		allowTrigger: config.allowTrigger ?? false,
+		refreshIntervalMs: config.refreshIntervalMs ?? DEFAULT_REFRESH_MS,
 	}
 }
 

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Spinner, Stack, Text, useToast } from '@liiift-studio/sanity-ui-compat'
 import { RefreshIcon, SyncIcon } from '@liiift-studio/sanity-ui-compat/icons'
 import { assessHealth, DEFAULT_INTERVAL_DAYS } from '../lib/health'
-import { fetchRuns, triggerBackup } from '../lib/transport'
+import { fetchRuns, fetchState, triggerBackup } from '../lib/transport'
 import { useConfig } from '../config'
 import { ConclusionBadge, HealthBadge } from './StatusBadge'
 import type { BackupTarget, WorkflowRun } from '../types'
@@ -32,6 +32,8 @@ export function TargetCard(props: { target: BackupTarget }) {
 	const [error, setError] = useState<string | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [triggering, setTriggering] = useState(false)
+	// null means not checked or unavailable on this transport, not 'healthy'.
+	const [workflowState, setWorkflowState] = useState<string | null>(null)
 
 	// Ignores responses from superseded requests, so a slow earlier load cannot
 	// overwrite a newer one. Also gates state updates after unmount.
@@ -63,9 +65,14 @@ export function TargetCard(props: { target: BackupTarget }) {
 		setLoading(true)
 		setError(null)
 		try {
-			const next = await fetchRuns(config, target)
+			// State is best-effort: a failure to read it must not blank the run list.
+			const [next, state] = await Promise.all([
+				fetchRuns(config, target),
+				fetchState(config, target).catch(() => null),
+			])
 			if (!mounted.current || ticket !== generation.current) return
 			setRuns(next)
+			setWorkflowState(state)
 		} catch (err) {
 			if (!mounted.current || ticket !== generation.current) return
 			// Keep the last known good runs. Discarding them means a transient blip
@@ -79,6 +86,13 @@ export function TargetCard(props: { target: BackupTarget }) {
 	useEffect(() => {
 		void load()
 	}, [load])
+
+	// Poll, so a panel left open does not sit on whatever it knew at mount.
+	useEffect(() => {
+		if (!config.refreshIntervalMs || unconfigured) return
+		const id = setInterval(() => void load(), config.refreshIntervalMs)
+		return () => clearInterval(id)
+	}, [config.refreshIntervalMs, unconfigured, load])
 
 	const onTrigger = useCallback(async () => {
 		setTriggering(true)
@@ -180,6 +194,17 @@ export function TargetCard(props: { target: BackupTarget }) {
 							) : null}
 						</div>
 
+							{workflowState && workflowState !== 'active' ? (
+							<Card padding={3} radius={2} tone="critical" role="alert">
+								<Text size={1}>
+									<strong>This workflow is disabled ({workflowState}).</strong>{' '}
+									{workflowState === 'disabled_inactivity'
+										? 'GitHub disables scheduled workflows after 60 days of repository inactivity. Re-enable it in the Actions tab; no backups are running.'
+										: 'No backups are running until it is re-enabled in the Actions tab.'}
+								</Text>
+							</Card>
+						) : null}
+
 						{error ? (
 							<Card padding={3} radius={2} tone="critical">
 								<Text size={1}>
@@ -194,7 +219,11 @@ export function TargetCard(props: { target: BackupTarget }) {
 								<Flex key={run.id} align="center" gap={3}>
 									<Box flex={1}>
 										<Text size={1} muted>
-											#{run.runNumber} · {run.event} · {formatTime(run.createdAt)}
+											{/* Linked so a failed run is one click from its logs. */}
+											<a href={run.htmlUrl} target="_blank" rel="noreferrer">
+												#{run.runNumber}
+											</a>{' '}
+											· {run.event} · {formatTime(run.createdAt)}
 										</Text>
 									</Box>
 									<ConclusionBadge conclusion={run.conclusion} />

@@ -26,3 +26,17 @@ describe('resolveConfig', () => {
 		expect(c.targets).toEqual([])
 	})
 })
+
+describe('resolveConfig — polling', () => {
+	it('polls every 5 minutes by default', () => {
+		expect(resolveConfig({}).refreshIntervalMs).toBe(300_000)
+	})
+
+	it('honours an explicit interval', () => {
+		expect(resolveConfig({ refreshIntervalMs: 60_000 }).refreshIntervalMs).toBe(60_000)
+	})
+
+	it('allows polling to be disabled with 0', () => {
+		expect(resolveConfig({ refreshIntervalMs: 0 }).refreshIntervalMs).toBe(0)
+	})
+})

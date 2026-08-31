@@ -59,6 +59,13 @@ export interface BackupMonitorConfig {
 	 * button is hidden rather than shown and failing with a 403.
 	 */
 	allowTrigger?: boolean
+	/**
+	 * How often the panel re-fetches, in milliseconds. Defaults to 5 minutes.
+	 *
+	 * A monitoring panel left open on a second screen otherwise shows whatever
+	 * it knew at mount, indefinitely. Set to 0 to disable polling.
+	 */
+	refreshIntervalMs?: number
 }
 
 /** Resolved config with defaults applied. */
@@ -67,6 +74,7 @@ export interface ResolvedConfig extends BackupMonitorConfig {
 	targets: BackupTarget[]
 	runLimit: number
 	allowTrigger: boolean
+	refreshIntervalMs: number
 }
 
 /** GitHub Actions run conclusion, as the panel cares about it. */

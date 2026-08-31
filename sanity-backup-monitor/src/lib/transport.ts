@@ -1,6 +1,6 @@
 // Chooses between calling GitHub directly and going through the backup proxy.
 
-import { dispatchWorkflow, listRuns, toWorkflowRun } from './github'
+import { dispatchWorkflow, fetchWorkflowState, listRuns, toWorkflowRun } from './github'
 import type { BackupTarget, ResolvedConfig, WorkflowRun } from '../types'
 
 /** Read a JSON response from the proxy, turning a failure into a useful message. */
@@ -64,5 +64,26 @@ export async function triggerBackup(config: ResolvedConfig, target: BackupTarget
 	await proxyFetch<void>(`${config.proxyUrl}/trigger`, config.statusKey, {
 		method: 'POST',
 		body: JSON.stringify({ key: target.proxyKey ?? target.label }),
+	})
+}
+
+/**
+ * Fetch a workflow's state, when the transport can.
+ *
+ * Only available in direct mode: the proxy exposes no equivalent endpoint, and
+ * returning null there means the panel simply omits the check rather than
+ * showing a false alarm.
+ *
+ * @param config - resolved plugin config
+ * @param target - the target to inspect
+ * @returns the state string, or null when unavailable
+ */
+export async function fetchState(config: ResolvedConfig, target: BackupTarget): Promise<string | null> {
+	if (config.mode !== 'direct' || !config.token) return null
+	return fetchWorkflowState({
+		owner: target.owner,
+		repo: target.repo,
+		workflow: target.workflow,
+		token: config.token,
 	})
 }

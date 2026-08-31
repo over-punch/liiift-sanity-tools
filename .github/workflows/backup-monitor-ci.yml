@@ -1,0 +1,118 @@
+# sanity-backup-monitor claims one build spans Studio v3.30 through v6.
+# Its devDependencies install only the newest majors, so nothing verified that
+# claim until this existed. Scoped to the one plugin; other tools in this
+# monorepo are unaffected.
+name: backup-monitor CI
+
+on:
+  push:
+    branches: [main]
+    paths: ['sanity-backup-monitor/**', '.github/workflows/backup-monitor-ci.yml']
+  pull_request:
+    paths: ['sanity-backup-monitor/**', '.github/workflows/backup-monitor-ci.yml']
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: sanity-backup-monitor
+
+jobs:
+  build:
+    name: Typecheck, test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  matrix:
+    # Each leg installs a real dependency combination the plugin claims to
+    # support. UI primitives resolve at runtime through sanity-ui-compat, so a
+    # typecheck against only the newest majors proves almost nothing — the
+    # branches that run on older Studios would never be compiled.
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Studio 3 · ui 2 · icons 2
+            sanity: "^3"
+            ui: "^2"
+            icons: "^2"
+            react: "^18"
+          - name: Studio 3 · ui 2 · icons 3
+            sanity: "^3"
+            ui: "^2"
+            icons: "^3"
+            react: "^18"
+          - name: Studio 5 · ui 3 · icons 3
+            sanity: "^5"
+            ui: "^3"
+            icons: "^3"
+            react: "^19"
+          - name: Studio 6 · ui 4 · icons 5
+            sanity: "^6"
+            ui: "^4"
+            icons: "^5"
+            react: "^19"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - name: Install this leg's Sanity versions
+        # --no-save keeps package.json untouched; --legacy-peer-deps because the
+        # older legs pair React 18 with packages whose peers name React 19.
+        # styled-components is a peer of @sanity/ui — without it the barrel
+        # cannot be imported at all.
+        run: |
+          npm install --no-save --legacy-peer-deps \
+            sanity@${{ matrix.sanity }} \
+            @sanity/ui@${{ matrix.ui }} \
+            @sanity/icons@${{ matrix.icons }} \
+            react@${{ matrix.react }} \
+            react-dom@${{ matrix.react }} \
+            styled-components@^6
+
+      - name: Report what actually resolved
+        run: |
+          node -e "for (const m of ['sanity','@sanity/ui','@sanity/icons','react']) \
+            console.log(m.padEnd(16), require(m + '/package.json').version)"
+
+      - name: Typecheck against this combination
+        run: npm run typecheck
+
+      - name: Test against this combination
+        run: npm test
+
+      - name: Verify the toast seam resolved
+        # This plugin shipped for four versions with every toast silently
+        # discarded, because @sanity/ui v4 tombstones useToast off the barrel
+        # and nothing mounted a viewport. A green typecheck would not have
+        # caught it — the declarations lie. This probe would have.
+        run: |
+          node --input-type=module -e "
+            const compat = await import('@liiift-studio/sanity-ui-compat')
+            const usable = v => typeof v === 'function' || (typeof v === 'object' && v !== null)
+            const core = ['Box','Card','Flex','Text','Button','Badge','Spinner','Stack','Container']
+            const missing = core.filter(n => !usable(compat[n]))
+            if (missing.length) { console.error('Core primitives unresolved:', missing); process.exit(1) }
+            if (!usable(compat.useToast)) { console.error('useToast unresolved'); process.exit(1) }
+            if (!usable(compat.ToastViewport)) { console.error('ToastViewport unresolved — toasts would be silently discarded'); process.exit(1) }
+            const icons = await import('@liiift-studio/sanity-ui-compat/icons')
+            for (const n of ['RefreshIcon','SyncIcon','ClockIcon']) {
+              if (!usable(icons[n])) { console.error('Icon unresolved:', n); process.exit(1) }
+            }
+            console.log('core primitives ', core.length + '/' + core.length)
+            console.log('toast seam      ', 'useToast + ToastViewport ok')
+            console.log('icons           ', 'ok')
+          "

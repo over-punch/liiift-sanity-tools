@@ -129,3 +129,33 @@ export async function dispatchWorkflow(params: {
 		},
 	)
 }
+
+/**
+ * Fetch a workflow's own state.
+ *
+ * GitHub disables scheduled workflows after 60 days of repository inactivity
+ * (`disabled_inactivity`), and they can be turned off by hand
+ * (`disabled_manually`). Either way the file still exists and the Actions tab
+ * still lists it, so the only symptom is that runs quietly stop — which the run
+ * list alone cannot distinguish from a repo that is simply idle. This is the
+ * precise failure this panel exists to catch, so it is worth a second request.
+ *
+ * @param params.owner - GitHub owner
+ * @param params.repo - repository name
+ * @param params.workflow - workflow filename
+ * @param params.token - GitHub token with Actions read access
+ * @returns the workflow's state string, e.g. "active" or "disabled_inactivity"
+ */
+export async function fetchWorkflowState(params: {
+	owner: string
+	repo: string
+	workflow: string
+	token: string
+}): Promise<string | null> {
+	const { owner, repo, workflow, token } = params
+	const data = await gh<{ state?: string }>(
+		`/repos/${owner}/${repo}/actions/workflows/${encodeURIComponent(workflow)}`,
+		token,
+	)
+	return data?.state ?? null
+}

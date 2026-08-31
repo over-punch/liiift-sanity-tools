@@ -45,6 +45,7 @@ export default defineConfig({
 | `token` | GitHub token — see Token scope |
 | `runLimit` | Runs listed per target (default 5) |
 | `allowTrigger` | Show the "Back up now" button (default **false**) |
+| `refreshIntervalMs` | Poll interval (default 5 min; `0` disables) |
 | `name` / `title` / `icon` | Studio tool identity |
 
 Each target takes `label`, `owner`, `repo`, `workflow`, and optionally `ref`
@@ -75,6 +76,15 @@ not downgrade a healthy target.
 
 `assessHealth` is exported. Its signature is
 `assessHealth(runs, expectedIntervalDays?, now?)` — pass `now` to make it deterministic.
+
+## Disabled workflows
+
+GitHub disables scheduled workflows after **60 days of repository inactivity**, and they
+can be disabled by hand. Either way the file still exists and the Actions tab still lists
+it — the only symptom is that runs quietly stop, which a run list alone cannot tell apart
+from an idle repo. The panel reads the workflow's own `state` and shows a prominent alert
+when it is not `active`. This is the failure mode the tool exists for, so it is worth the
+extra request. (Direct mode only.)
 
 ## Token scope
 
