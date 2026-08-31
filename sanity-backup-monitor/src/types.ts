@@ -72,10 +72,14 @@ export interface ResolvedConfig extends BackupMonitorConfig {
 /** GitHub Actions run conclusion, as the panel cares about it. */
 export type RunConclusion =
 	| 'success'
+	| 'neutral'
 	| 'failure'
-	| 'cancelled'
 	| 'timed_out'
+	| 'startup_failure'
+	| 'stale'
+	| 'cancelled'
 	| 'skipped'
+	| 'action_required'
 	| 'in_progress'
 	| 'unknown'
 
@@ -94,9 +98,17 @@ export interface WorkflowRun {
 /** How healthy a target's backup is. */
 export type HealthLevel = 'ok' | 'warning' | 'critical' | 'unknown'
 
+/**
+ * Why an assessment reached its level. Distinguishes a backup that is late from
+ * one that is running and breaking - the panel exists to tell those apart.
+ */
+export type HealthReason = 'ok' | 'stale' | 'failing' | 'no-runs' | 'undetermined'
+
 /** Result of evaluating a target's run history. */
 export interface HealthAssessment {
 	level: HealthLevel
+	/** Why it reached that level. */
+	reason: HealthReason
 	/** Hours since the last successful run, or null if there has never been one. */
 	hoursSinceSuccess: number | null
 	/** Short human sentence for the panel. */

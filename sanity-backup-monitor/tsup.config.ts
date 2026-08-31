@@ -1,9 +1,9 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-	// proxy/core is built too, so a JavaScript-only site (no tsconfig, no
-	// typescript dependency) can import it instead of copying a .ts file.
-	entry: { index: 'src/index.tsx', 'proxy-core': 'proxy/core.ts' },
+	// Only the Studio plugin is published. proxy/ stays in the repo as reference
+	// but is not built or shipped - see README for why.
+	entry: { index: 'src/index.tsx' },
 	format: ['esm', 'cjs'],
 	dts: true,
 	clean: true,

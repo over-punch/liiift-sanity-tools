@@ -5,14 +5,25 @@ import type { RunConclusion, WorkflowRun } from '../types'
 const GITHUB_API = 'https://api.github.com'
 
 /** Normalise GitHub's status/conclusion pair into a single value the panel uses. */
+/** Statuses that mean the run has not reached a conclusion yet. */
+const PENDING_STATUSES = new Set(['queued', 'in_progress', 'waiting', 'requested', 'pending'])
+
 export function normaliseConclusion(status: string, conclusion: string | null): RunConclusion {
-	if (status !== 'completed') return 'in_progress'
+	// Only these mean "not finished". GitHub also reports conclusion-shaped values
+	// in `status`, and mapping those to in_progress hid real failures from the
+	// health assessment entirely.
+	if (PENDING_STATUSES.has(status)) return 'in_progress'
+	if (status !== 'completed' && !conclusion) return 'unknown'
 	switch (conclusion) {
 		case 'success':
+		case 'neutral':
 		case 'failure':
-		case 'cancelled':
 		case 'timed_out':
+		case 'startup_failure':
+		case 'stale':
+		case 'cancelled':
 		case 'skipped':
+		case 'action_required':
 			return conclusion
 		default:
 			return 'unknown'

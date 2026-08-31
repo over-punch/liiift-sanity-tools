@@ -1,13 +1,16 @@
-// One repository's backup health, recent runs, and trigger button.
+// One repository's backup health, recent runs, and optional trigger button.
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Spinner, Stack, Text, useToast } from '@liiift-studio/sanity-ui-compat'
 import { RefreshIcon, SyncIcon } from '@liiift-studio/sanity-ui-compat/icons'
 import { assessHealth, DEFAULT_INTERVAL_DAYS } from '../lib/health'
 import { fetchRuns, triggerBackup } from '../lib/transport'
 import { useConfig } from '../config'
 import { ConclusionBadge, HealthBadge } from './StatusBadge'
-import type { BackupTarget, HealthAssessment, WorkflowRun } from '../types'
+import type { BackupTarget, WorkflowRun } from '../types'
+
+/** How long to wait after a dispatch before looking for the new run. */
+const POST_TRIGGER_REFRESH_MS = 4000
 
 /** Format an ISO timestamp for display, falling back to the raw value. */
 function formatTime(iso: string): string {
@@ -30,6 +33,22 @@ export function TargetCard(props: { target: BackupTarget }) {
 	const [loading, setLoading] = useState(true)
 	const [triggering, setTriggering] = useState(false)
 
+	// Ignores responses from superseded requests, so a slow earlier load cannot
+	// overwrite a newer one. Also gates state updates after unmount.
+	const generation = useRef(0)
+	const mounted = useRef(true)
+	const refreshTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+	useEffect(() => {
+		mounted.current = true
+		return () => {
+			mounted.current = false
+			// Without this, a dispatch's delayed refresh fires against an unmounted
+			// card, issuing an orphan request and setting state on a dead component.
+			if (refreshTimer.current) clearTimeout(refreshTimer.current)
+		}
+	}, [])
+
 	// True when no credential is configured yet, which is the state a Studio is in
 	// between installing the plugin and someone adding the token.
 	const unconfigured =
@@ -40,15 +59,20 @@ export function TargetCard(props: { target: BackupTarget }) {
 			setLoading(false)
 			return
 		}
+		const ticket = ++generation.current
 		setLoading(true)
 		setError(null)
 		try {
-			setRuns(await fetchRuns(config, target))
+			const next = await fetchRuns(config, target)
+			if (!mounted.current || ticket !== generation.current) return
+			setRuns(next)
 		} catch (err) {
+			if (!mounted.current || ticket !== generation.current) return
+			// Keep the last known good runs. Discarding them means a transient blip
+			// replaces the whole health picture with a bare error.
 			setError(err instanceof Error ? err.message : String(err))
-			setRuns(null)
 		} finally {
-			setLoading(false)
+			if (mounted.current && ticket === generation.current) setLoading(false)
 		}
 	}, [config, target, unconfigured])
 
@@ -61,45 +85,67 @@ export function TargetCard(props: { target: BackupTarget }) {
 		try {
 			await triggerBackup(config, target)
 			toast.push({ status: 'success', title: `Backup started for ${target.label}` })
-			// GitHub needs a moment before the new run appears in the list.
-			setTimeout(() => void load(), 4000)
+			// Stay busy until the refresh lands, otherwise the buttons re-enable while
+			// the card still shows pre-trigger data and a second click double-dispatches.
+			if (refreshTimer.current) clearTimeout(refreshTimer.current)
+			refreshTimer.current = setTimeout(() => {
+				void load().finally(() => {
+					if (mounted.current) setTriggering(false)
+				})
+			}, POST_TRIGGER_REFRESH_MS)
 		} catch (err) {
 			const raw = err instanceof Error ? err.message : String(err)
 			toast.push({
 				status: 'error',
 				title: `Could not start backup for ${target.label}`,
-				// A 403 here is almost always a read-scoped token, which is the
-				// recommended setup - say so rather than showing a bare status code.
-				description: raw.includes('403')
-					? 'The token lacks Actions: write. Triggering needs it; reading run status does not.'
-					: raw,
+				// Only claim a token-scope problem when talking to GitHub directly; the
+				// proxy returns its own 403 when triggering is disabled server-side.
+				description:
+					config.mode === 'direct' && raw.includes('403')
+						? 'The token lacks Actions: write. Triggering needs it; reading run status does not.'
+						: raw,
 			})
-		} finally {
-			setTriggering(false)
+			if (mounted.current) setTriggering(false)
 		}
 	}, [config, target, toast, load])
 
-	const health: HealthAssessment | null = runs
-		? assessHealth(runs, target.expectedIntervalDays ?? DEFAULT_INTERVAL_DAYS)
-		: null
+	// Sorted for display so the list agrees with the badge, which assesses
+	// newest-first. Memoised so it is not redone on every unrelated re-render.
+	const ordered = useMemo(
+		() =>
+			[...(runs ?? [])].sort(
+				(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+			),
+		[runs],
+	)
+
+	const health = useMemo(
+		() => (runs ? assessHealth(runs, target.expectedIntervalDays ?? DEFAULT_INTERVAL_DAYS) : null),
+		[runs, target.expectedIntervalDays],
+	)
 
 	// A stale or broken backup gets a coloured card, so it reads at a glance
 	// rather than needing to be looked for.
 	const tone =
-		health?.level === 'critical' ? 'critical' :
-		health?.level === 'warning' ? 'caution' : 'default'
+		health?.level === 'critical' ? 'critical' : health?.level === 'warning' ? 'caution' : 'default'
+
+	const headingId = `backup-${target.owner}-${target.repo}-${target.workflow}`
 
 	return (
-		<Card padding={4} radius={2} shadow={1} tone={tone}>
+		<Card padding={4} radius={2} shadow={1} tone={tone} as="section" aria-labelledby={headingId}>
 			<Stack space={4}>
 				<Flex align="center" gap={3}>
 					<Box flex={1}>
 						<Stack space={2}>
-							<Text size={2} weight="semibold">{target.label}</Text>
-							<Text size={1} muted>{target.owner}/{target.repo} · {target.workflow}</Text>
+							<Text as="h3" id={headingId} size={2} weight="semibold">
+								{target.label}
+							</Text>
+							<Text size={1} muted>
+								{target.owner}/{target.repo} · {target.workflow}
+							</Text>
 						</Stack>
 					</Box>
-					{health ? <HealthBadge level={health.level} /> : null}
+					{health ? <HealthBadge health={health} /> : null}
 				</Flex>
 
 				{unconfigured ? (
@@ -118,17 +164,33 @@ export function TargetCard(props: { target: BackupTarget }) {
 							)}
 						</Text>
 					</Card>
-				) : loading ? (
-					<Flex align="center" gap={2}><Spinner muted /><Text size={1} muted>Loading runs…</Text></Flex>
-				) : error ? (
-					<Card padding={3} radius={2} tone="critical">
-						<Text size={1}>{error}</Text>
-					</Card>
 				) : (
 					<Stack space={3}>
-						{health ? <Text size={1}>{health.message}</Text> : null}
+						{/* Announced so a screen reader hears the outcome of a refresh. */}
+						<div role="status" aria-live="polite">
+							{loading ? (
+								<Flex align="center" gap={2}>
+									<Spinner muted />
+									<Text size={1} muted>
+										Loading runs…
+									</Text>
+								</Flex>
+							) : health ? (
+								<Text size={1}>{health.message}</Text>
+							) : null}
+						</div>
+
+						{error ? (
+							<Card padding={3} radius={2} tone="critical">
+								<Text size={1}>
+									<strong>Error:</strong> {error}
+									{runs ? ' — showing the last successful fetch.' : ''}
+								</Text>
+							</Card>
+						) : null}
+
 						<Stack space={2}>
-							{(runs ?? []).map(run => (
+							{ordered.map(run => (
 								<Flex key={run.id} align="center" gap={3}>
 									<Box flex={1}>
 										<Text size={1} muted>
@@ -138,31 +200,39 @@ export function TargetCard(props: { target: BackupTarget }) {
 									<ConclusionBadge conclusion={run.conclusion} />
 								</Flex>
 							))}
-							{(runs ?? []).length === 0 ? (
-								<Text size={1} muted>No runs recorded yet.</Text>
+							{runs && ordered.length === 0 ? (
+								<Text size={1} muted>
+									No runs recorded yet.
+								</Text>
 							) : null}
 						</Stack>
 					</Stack>
 				)}
 
-				<Flex gap={2} hidden={unconfigured}>
-					<Button
-						mode="ghost"
-						icon={RefreshIcon}
-						text="Refresh"
-						onClick={() => void load()}
-						disabled={loading}
-					/>
-					{config.allowTrigger ? (
+				{/* Conditional render rather than the hidden attribute: hidden depends on a
+				    :not([hidden]) guard in the UI library and leaves controls in the DOM. */}
+				{unconfigured ? null : (
+					<Flex gap={2}>
 						<Button
-							tone="primary"
-							icon={SyncIcon}
-							text={triggering ? 'Starting…' : 'Back up now'}
-							onClick={() => void onTrigger()}
-							disabled={triggering || loading}
+							mode="ghost"
+							icon={RefreshIcon}
+							text="Refresh"
+							aria-label={`Refresh ${target.label}`}
+							onClick={() => void load()}
+							disabled={loading || triggering}
 						/>
-					) : null}
-				</Flex>
+						{config.allowTrigger ? (
+							<Button
+								tone="primary"
+								icon={SyncIcon}
+								text={triggering ? 'Starting…' : 'Back up now'}
+								aria-label={`Back up ${target.label} now`}
+								onClick={() => void onTrigger()}
+								disabled={triggering || loading}
+							/>
+						) : null}
+					</Flex>
+				)}
 			</Stack>
 		</Card>
 	)

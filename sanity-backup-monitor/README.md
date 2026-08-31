@@ -1,14 +1,13 @@
 # @liiift-studio/sanity-backup-monitor
 
-Studio panel showing whether your scheduled dataset backups are actually running,
-with a button to run one on demand.
+Studio panel showing whether your scheduled dataset backups are actually running.
 
 ## Why
 
 A backup's failure mode is silence. TDF's backup workflow existed, appeared in the
 Actions tab, and had not succeeded in three months — nobody noticed, because nothing
 surfaced the gap anywhere people look. This panel puts backup age in the Studio, where
-editors already are, and colours the card when a backup is overdue.
+editors already are, and colours the card when a backup is overdue or failing.
 
 ## Install
 
@@ -23,8 +22,7 @@ import { backupMonitor } from '@liiift-studio/sanity-backup-monitor'
 export default defineConfig({
   plugins: [
     backupMonitor({
-      proxyUrl: 'https://ops.example.com/api/backup-proxy',
-      statusKey: process.env.SANITY_STUDIO_BACKUP_STATUS_KEY,
+      token: process.env.SANITY_STUDIO_BACKUP_GH_TOKEN,
       targets: [
         {
           label: 'MCKL',
@@ -32,7 +30,6 @@ export default defineConfig({
           repo: 'mckl-cms',
           workflow: 'backup-routine.yml',
           expectedIntervalDays: 7,
-          proxyKey: 'mckl',
         },
       ],
     }),
@@ -45,81 +42,63 @@ export default defineConfig({
 | Option | Purpose |
 | --- | --- |
 | `targets` | Repositories to watch (see below) |
-| `mode` | `proxy` or `direct`. Defaults to `proxy` when `proxyUrl` is set |
-| `proxyUrl` | Base URL of the backup proxy |
-| `statusKey` | Shared key the proxy checks |
-| `token` | GitHub token, **direct mode only** — see the warning below |
+| `token` | GitHub token — see Token scope |
 | `runLimit` | Runs listed per target (default 5) |
 | `allowTrigger` | Show the "Back up now" button (default **false**) |
 | `name` / `title` / `icon` | Studio tool identity |
 
 Each target takes `label`, `owner`, `repo`, `workflow`, and optionally `ref`
-(default `main`), `expectedIntervalDays` (default 7), and `proxyKey`.
+(default `main`) and `expectedIntervalDays` (default 7).
 
-## Health thresholds
+## Health
 
-`expectedIntervalDays` drives the whole panel:
+`expectedIntervalDays` drives the panel. The badge distinguishes *late* from *broken*,
+because those need different responses:
 
-| State | Condition |
+| Badge | Meaning |
 | --- | --- |
-| **Healthy** | Last success within 1.25x the interval |
-| **Overdue** | Past 1.25x, or failures since the last success |
-| **Attention** | Past 2x the interval, or no success in the fetched runs |
+| **Healthy** | Last success within 1.25x the interval, nothing failing since |
+| **Overdue** | Past 1.25x the interval |
+| **Stale** | Past 2x the interval |
+| **Errors** | Recent success, but runs have failed since |
+| **Failing** | No success in the fetched runs |
+| **No runs** | Nothing found — usually a wrong `workflow` filename |
+| **Unknown** | Runs still in flight, or a timestamp that could not be read |
 
-The 25% grace exists because GitHub delays scheduled runs by minutes, never days. On a
-weekly cadence that surfaces a problem at 8.75 days rather than sitting quiet for a
-fortnight.
+The 25% grace exists because GitHub delays scheduled runs by minutes or hours, never
+days. On a weekly cadence that surfaces a problem at 8.75 days rather than sitting quiet
+for a fortnight.
 
-`assessHealth` is exported and pure, so it can be reused or tested independently.
+GitHub's `neutral` counts as a success; `skipped`, `cancelled` and `action_required` are
+treated as neither success nor failure, so routine path-filter and concurrency events do
+not downgrade a healthy target.
 
-## Direct mode vs proxy mode
-
-A `token` passed to this plugin is compiled into the Studio's JavaScript bundle. On a
-hosted Studio that bundle sits behind login, so it is not readable by the public — but
-it *is* readable, via devtools, by **anyone who can open the Studio**, including Viewers.
-Restricting the tool to editors does not change that.
-
-So the choice follows from what the token can do:
-
-| | Token scope | If a Viewer extracts it |
-| --- | --- | --- |
-| **Status only** | `Actions: read` | They can read workflow run history. Minor. |
-| **With triggering** | `Actions: read and write` | They can dispatch workflows on those repos. Not minor. |
-
-**Direct mode is reasonable for a status-only panel** with a read-only, fine-grained
-token. Set `BACKUP_ALLOW_TRIGGER` aside entirely and simply do not pass a write-scoped
-token; the trigger button will return 403.
-
-**The trigger button is off by default.** Set `allowTrigger: true` to show it. It calls
-`workflow_dispatch`, which needs `Actions: write` — with a read-scoped token the button
-would simply 403, so it is hidden rather than shown and failing.
-
-**Use proxy mode once you want the trigger button.** The token stays on a server you
-control, the Studio sends only an opaque key, and the proxy resolves it against a
-server-side allowlist — so a fully readable bundle still cannot reach a repository that
-is not on that list.
-
-Separately: if you store a token in a Sanity *document* rather than plugin config, the
-dataset ACL governs it, and on a public dataset that means anyone at all. This plugin
-does not do that, but it is worth knowing the distinction.
-
-The panel shows a warning banner whenever direct mode is active with a token.
-
-See [`proxy/README.md`](./proxy/README.md) for setup.
+`assessHealth` is exported. Its signature is
+`assessHealth(runs, expectedIntervalDays?, now?)` — pass `now` to make it deterministic.
 
 ## Token scope
 
-Fine-grained, limited to the backup repositories:
+The token is compiled into the Studio bundle. On a hosted Studio that bundle sits behind
+login, so it is not public — but it **is** readable via devtools by anyone who can open
+the Studio, including Viewers. Restricting the tool to editors does not change that.
 
-- **Actions: Read-only** — status panel works, "Back up now" returns 403
-- **Actions: Read and write** — triggering also works
+Use a **fine-grained token scoped to `Actions: Read-only` on a single repository**. Then
+what a Studio user could extract reaches nothing they cannot already read from the
+dataset. Do not use one token across several repositories: that turns a Viewer on one
+project into a reader of another project's backups.
 
-Set `BACKUP_ALLOW_TRIGGER=false` on the proxy for a read-only deployment even with a
-read/write token.
+**Triggering is off by default.** `allowTrigger: true` shows the "Back up now" button,
+which calls `workflow_dispatch` and needs `Actions: read and write`. A write-scoped token
+extractable from the bundle can dispatch workflows on that repo, which is a genuinely
+larger risk than reading run history — so the panel shows a warning when that combination
+is active, and a server-side proxy is the right answer if you want it in production.
+
+A proxy implementation lives in `proxy/` in this repo but is **not published** and has
+not been hardened; see that directory's README before relying on it.
 
 ## Testing
 
 ```bash
-npm test        # health assessment + proxy allowlist
+npm test
 npm run typecheck
 ```

@@ -1,3 +1,9 @@
+> **Not published, not hardened.** This directory ships in the repo only. A panel
+> review found the proxy fails open when `BACKUP_STATUS_KEY` is unset, that the
+> allowlist can be bypassed via prototype-chain keys, that `/trigger` has no rate
+> limiting, and that it forwards GitHub's full run payload including commit author
+> emails. Do not deploy it without addressing those first.
+
 # Backup proxy
 
 Keeps the GitHub token off the client. Required for any Studio whose dataset is not

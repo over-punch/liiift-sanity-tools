@@ -1,6 +1,6 @@
 {
 	"name": "@liiift-studio/sanity-backup-monitor",
-	"version": "1.2.0",
+	"version": "2.0.0",
 	"description": "Sanity Studio panel showing backup health across foundry repos, with on-demand triggering",
 	"license": "UNLICENSED",
 	"publishConfig": {
@@ -18,25 +18,13 @@
 			},
 			"default": "./dist/index.mjs"
 		},
-		"./package.json": "./package.json",
-		"./proxy": {
-			"import": {
-				"types": "./dist/proxy-core.d.mts",
-				"default": "./dist/proxy-core.mjs"
-			},
-			"require": {
-				"types": "./dist/proxy-core.d.ts",
-				"default": "./dist/proxy-core.js"
-			},
-			"default": "./dist/proxy-core.mjs"
-		}
+		"./package.json": "./package.json"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"files": [
 		"dist",
-		"proxy",
 		"README.md"
 	],
 	"scripts": {
@@ -73,5 +61,6 @@
 		"sanity-plugin",
 		"backup",
 		"liiift"
-	]
+	],
+	"sideEffects": false
 }
