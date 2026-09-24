@@ -18,15 +18,15 @@ export default defineCliConfig({
 			alias: {
 				...(prev.resolve?.alias || {}),
 
-				// --- Cross-package @liiift-studio/* imports ---
+				// --- Cross-package @overpunch/* imports ---
 				// Tools that import each other by package name
-				'@liiift-studio/sanity-advanced-reference-array': path.join(toolsRoot, 'sanity-advanced-reference-array/src'),
-				'@liiift-studio/sanity-key-value-input': path.join(toolsRoot, 'sanity-key-value-input/src'),
-				'@liiift-studio/sanity-nested-object-selector': path.join(toolsRoot, 'sanity-nested-object-selector/src'),
-				'@liiift-studio/sanity-foundry-constants': path.join(toolsRoot, 'sanity-foundry-constants/src'),
-				'@liiift-studio/sanity-font-manager': path.join(toolsRoot, 'sanity-font-uploader/src'),
-				'@liiift-studio/sanity-typeface-fields': path.join(toolsRoot, 'sanity-typeface-fields/src'),
-				'@liiift-studio/sanity-typeface-seo': path.join(toolsRoot, 'sanity-typeface-seo/src'),
+				'@overpunch/sanity-advanced-reference-array': path.join(toolsRoot, 'sanity-advanced-reference-array/src'),
+				'@overpunch/sanity-key-value-input': path.join(toolsRoot, 'sanity-key-value-input/src'),
+				'@overpunch/sanity-nested-object-selector': path.join(toolsRoot, 'sanity-nested-object-selector/src'),
+				'@overpunch/sanity-foundry-constants': path.join(toolsRoot, 'sanity-foundry-constants/src'),
+				'@overpunch/sanity-font-manager': path.join(toolsRoot, 'sanity-font-uploader/src'),
+				'@overpunch/sanity-typeface-fields': path.join(toolsRoot, 'sanity-typeface-fields/src'),
+				'@overpunch/sanity-typeface-seo': path.join(toolsRoot, 'sanity-typeface-seo/src'),
 
 				// --- Runtime deps used by sibling tools ---
 				// Sibling tool source files can't find these via normal node_modules

@@ -1,5 +1,5 @@
 {
-  "name": "@liiift-studio/sanity-order-schema",
+  "name": "@overpunch/sanity-order-schema",
   "version": "1.2.0",
   "description": "RETIRED — inlined into sites/darden/sanity/schemas/order.tsx. Do not publish.",
   "repository": {

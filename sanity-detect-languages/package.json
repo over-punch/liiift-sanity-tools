@@ -1,5 +1,5 @@
 {
-  "name": "@liiift-studio/sanity-detect-languages",
+  "name": "@overpunch/sanity-detect-languages",
   "version": "1.1.1",
   "description": "Sanity Studio document action that detects the languages a typeface supports from its fonts' character sets, using bundled Hyperglot data",
   "main": "dist/index.js",
@@ -50,6 +50,6 @@
     "directory": "sanity-detect-languages"
   },
   "dependencies": {
-    "@liiift-studio/sanity-ui-compat": "^0.1.2"
+    "@overpunch/sanity-ui-compat": "^0.1.2"
   }
 }

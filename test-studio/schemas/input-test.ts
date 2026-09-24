@@ -17,7 +17,7 @@ const inputTestSchema = {
 		{
 			name: 'advancedRefs',
 			title: 'Advanced Reference Array',
-			description: 'Tests @liiift-studio/sanity-advanced-reference-array',
+			description: 'Tests @overpunch/sanity-advanced-reference-array',
 			type: 'array',
 			components: { input: AdvancedRefArray },
 			of: [
@@ -30,7 +30,7 @@ const inputTestSchema = {
 		{
 			name: 'keyValues',
 			title: 'Key-Value Pairs',
-			description: 'Tests @liiift-studio/sanity-key-value-input',
+			description: 'Tests @overpunch/sanity-key-value-input',
 			type: 'array',
 			components: { input: KeyValueInput },
 			of: [
@@ -46,7 +46,7 @@ const inputTestSchema = {
 		{
 			name: 'nestedObjects',
 			title: 'Nested Object Selector',
-			description: 'Tests @liiift-studio/sanity-nested-object-selector',
+			description: 'Tests @overpunch/sanity-nested-object-selector',
 			type: 'array',
 			components: { input: NestedObjectArraySelector },
 			of: [

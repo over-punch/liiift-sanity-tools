@@ -1,5 +1,5 @@
 {
-  "name": "@liiift-studio/sanity-ui-compat",
+  "name": "@overpunch/sanity-ui-compat",
   "version": "0.1.4",
   "description": "Version-agnostic access to @sanity/ui and @sanity/icons across Studio v3 to v6",
   "license": "MIT",

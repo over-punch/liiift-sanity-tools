@@ -1,6 +1,6 @@
 // Colour-coded badges for a run conclusion and for a target's overall health.
 
-import { Badge } from '@liiift-studio/sanity-ui-compat'
+import { Badge } from '@overpunch/sanity-ui-compat'
 import type { HealthAssessment, RunConclusion } from '../types'
 
 /** Sanity UI tones available to these badges. */

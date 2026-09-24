@@ -1,8 +1,8 @@
-# @liiift-studio/sanity-detect-languages
+# @overpunch/sanity-detect-languages
 
-[![npm version](https://img.shields.io/npm/v/@liiift-studio/sanity-detect-languages.svg)](https://www.npmjs.com/package/@liiift-studio/sanity-detect-languages)
+[![npm version](https://img.shields.io/npm/v/@overpunch/sanity-detect-languages.svg)](https://www.npmjs.com/package/@overpunch/sanity-detect-languages)
 [![Sanity Studio v3–v6](https://img.shields.io/badge/Sanity%20Studio-v3%20%C2%B7%20v4%20%C2%B7%20v5%20%C2%B7%20v6-f03e2f)](#studio-compatibility)
-[![license](https://img.shields.io/npm/l/@liiift-studio/sanity-detect-languages.svg)](#attribution)
+[![license](https://img.shields.io/npm/l/@overpunch/sanity-detect-languages.svg)](#attribution)
 
 A Sanity Studio document action that fills a typeface's supported-languages list from the character
 sets already stored on its fonts. Bundles the [Hyperglot](https://github.com/rosettatype/hyperglot)
@@ -13,16 +13,16 @@ No font parsing: it reads `characterSet.chars` off each linked font document.
 ## Install
 
 ```bash
-npm install @liiift-studio/sanity-detect-languages
+npm install @overpunch/sanity-detect-languages
 ```
 
-Import specifier: `@liiift-studio/sanity-detect-languages` (dual ESM/CJS build).
+Import specifier: `@overpunch/sanity-detect-languages` (dual ESM/CJS build).
 
 ## Use
 
 ```js
 // sanity.config.js
-import { createDetectLanguagesAction } from '@liiift-studio/sanity-detect-languages'
+import { createDetectLanguagesAction } from '@overpunch/sanity-detect-languages'
 
 const DetectLanguages = createDetectLanguagesAction({
   write: { type: 'field', name: 'languages' },
@@ -94,7 +94,7 @@ value — `tsc` cannot see the breakage, so a build passing is not evidence of a
 
 This package therefore imports **no `@sanity/ui` or `@sanity/icons` symbol directly**. Its single
 UI import (`useToast`) routes through
-[`@liiift-studio/sanity-ui-compat`](https://www.npmjs.com/package/@liiift-studio/sanity-ui-compat),
+[`@overpunch/sanity-ui-compat`](https://www.npmjs.com/package/@overpunch/sanity-ui-compat),
 which resolves whichever namespace is actually installed at runtime and degrades to a fallback when
 a symbol is absent — the fallback described in the note above.
 

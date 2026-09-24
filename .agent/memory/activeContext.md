@@ -2,7 +2,7 @@
 
 Last updated: 2026-08-20
 
-## New package: @liiift-studio/sanity-ui-compat 0.1.0 (2026-08-20)
+## New package: @overpunch/sanity-ui-compat 0.1.0 (2026-08-20)
 
 Built to unblock taking the Studios to Sanity v6. **Not yet published, not yet adopted by any
 plugin.** Lives at `sanity-ui-compat/` as a plain directory (like `sanity-detect-languages` and

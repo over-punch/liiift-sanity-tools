@@ -20,50 +20,50 @@ Every package is a standalone plugin or component that mounts into a Sanity Stud
 
 ## Choose your path — the tool suite
 
-Most `@liiift-studio/*` packages below are **published on npm** (the table notes the exceptions). Each package declares its own `sanity` peer-dependency range and version — check the package's `package.json` or npm for the authoritative numbers.
+Most `@overpunch/*` packages below are **published on npm** (the table notes the exceptions). Each package declares its own `sanity` peer-dependency range and version — check the package's `package.json` or npm for the authoritative numbers.
 
 ### Data operations
 
 | Package | What it does |
 |---|---|
-| [`@liiift-studio/sanity-bulk-data-operations`](./sanity-bulk-data-operations) | Search, add, and modify data across any document types with safety features |
-| [`@liiift-studio/sanity-export-data`](./sanity-export-data) | Export any document types to CSV or JSON, with optional reference population |
-| [`@liiift-studio/sanity-search-and-delete`](./sanity-search-and-delete) | Bulk content management — search and delete with danger-mode safety |
-| [`@liiift-studio/sanity-delete-unused-assets`](./sanity-delete-unused-assets) | Remove unused assets, analyze storage, and detect duplicates |
-| [`@liiift-studio/sanity-convert-references`](./sanity-convert-references) | Convert strong to weak references and scan for broken references |
-| [`@liiift-studio/sanity-convert-ids-to-slugs`](./sanity-convert-ids-to-slugs) | Convert document IDs to slug-based IDs with automatic reference updating |
-| [`@liiift-studio/sanity-duplicate-and-rename`](./sanity-duplicate-and-rename) | Duplicate and move fields across documents with bulk processing |
+| [`@overpunch/sanity-bulk-data-operations`](./sanity-bulk-data-operations) | Search, add, and modify data across any document types with safety features |
+| [`@overpunch/sanity-export-data`](./sanity-export-data) | Export any document types to CSV or JSON, with optional reference population |
+| [`@overpunch/sanity-search-and-delete`](./sanity-search-and-delete) | Bulk content management — search and delete with danger-mode safety |
+| [`@overpunch/sanity-delete-unused-assets`](./sanity-delete-unused-assets) | Remove unused assets, analyze storage, and detect duplicates |
+| [`@overpunch/sanity-convert-references`](./sanity-convert-references) | Convert strong to weak references and scan for broken references |
+| [`@overpunch/sanity-convert-ids-to-slugs`](./sanity-convert-ids-to-slugs) | Convert document IDs to slug-based IDs with automatic reference updating |
+| [`@overpunch/sanity-duplicate-and-rename`](./sanity-duplicate-and-rename) | Duplicate and move fields across documents with bulk processing |
 
 ### Studio inputs & UI
 
 | Package | What it does |
 |---|---|
-| [`@liiift-studio/sanity-advanced-reference-array`](./sanity-advanced-reference-array) | Reference array component with search, sort, and bulk operations |
-| [`@liiift-studio/sanity-key-value-input`](./sanity-key-value-input) | Input component for ordered key-value string-pair editing |
-| [`@liiift-studio/sanity-nested-object-selector`](./sanity-nested-object-selector) | Searchable checkbox selector for nested objects within documents |
-| [`@liiift-studio/sanity-studio-version-badge`](./sanity-studio-version-badge) | Shows installed `@liiift-studio` package versions in a badge on the structure root |
+| [`@overpunch/sanity-advanced-reference-array`](./sanity-advanced-reference-array) | Reference array component with search, sort, and bulk operations |
+| [`@overpunch/sanity-key-value-input`](./sanity-key-value-input) | Input component for ordered key-value string-pair editing |
+| [`@overpunch/sanity-nested-object-selector`](./sanity-nested-object-selector) | Searchable checkbox selector for nested objects within documents |
+| [`@overpunch/sanity-studio-version-badge`](./sanity-studio-version-badge) | Shows installed `@liiift-studio` package versions in a badge on the structure root |
 
 ### Type-foundry domain
 
 | Package | What it does |
 |---|---|
-| [`@liiift-studio/sanity-font-manager`](./sanity-font-uploader) | Full font management suite — batch upload, format conversion, metadata extraction, CSS generation, collection/pair generation, script variants. *(Published from the `sanity-font-uploader` directory.)* |
-| [`@liiift-studio/sanity-font-data-extractor`](./sanity-font-data-extractor) | Inspect OpenType metadata and variable-font axes; compare fonts side by side |
-| [`@liiift-studio/sanity-type-foundry-utilities`](./sanity-type-foundry-utilities) | Utilities desk, Fingerprint Reader for font forensics, and font metadata tools |
-| [`@liiift-studio/sanity-typeface-fields`](./sanity-typeface-fields) | Standalone field definitions for typeface documents |
-| [`@liiift-studio/sanity-typeface-seo`](./sanity-typeface-seo) | Standalone SEO/social field definitions for typeface documents |
-| [`@liiift-studio/sanity-foundry-constants`](./sanity-foundry-constants) | Shared environment-driven constants for foundry studios |
+| [`@overpunch/sanity-font-manager`](./sanity-font-uploader) | Full font management suite — batch upload, format conversion, metadata extraction, CSS generation, collection/pair generation, script variants. *(Published from the `sanity-font-uploader` directory.)* |
+| [`@overpunch/sanity-font-data-extractor`](./sanity-font-data-extractor) | Inspect OpenType metadata and variable-font axes; compare fonts side by side |
+| [`@overpunch/sanity-type-foundry-utilities`](./sanity-type-foundry-utilities) | Utilities desk, Fingerprint Reader for font forensics, and font metadata tools |
+| [`@overpunch/sanity-typeface-fields`](./sanity-typeface-fields) | Standalone field definitions for typeface documents |
+| [`@overpunch/sanity-typeface-seo`](./sanity-typeface-seo) | Standalone SEO/social field definitions for typeface documents |
+| [`@overpunch/sanity-foundry-constants`](./sanity-foundry-constants) | Shared environment-driven constants for foundry studios |
 
 ### Commerce & ops
 
 | Package | What it does | Status |
 |---|---|---|
-| [`@liiift-studio/deploy-vercel-from-sanity`](./deploy-vercel-from-sanity) | Trigger and monitor Vercel deployments with status, history, and build logs | Published on npm |
+| [`@overpunch/deploy-vercel-from-sanity`](./deploy-vercel-from-sanity) | Trigger and monitor Vercel deployments with status, history, and build logs | Published on npm |
 | [`sanity-sales-portal`](./sanity-sales-portal) | Sales dashboard and analytics plugin | In-repo, not yet on npm |
 | [`sanity-renewals-authorization`](./sanity-renewals-authorization) | Renewal order management for subscription-based businesses | In-repo, not yet on npm |
-| [`@liiift-studio/sanity-order-schema`](./sanity-order-schema) | Shared order schema for Liiift foundry studios | Private — internal use only |
+| [`@overpunch/sanity-order-schema`](./sanity-order-schema) | Shared order schema for Liiift foundry studios | Private — internal use only |
 
-> **Notes on names & status.** The font manager directory is `sanity-font-uploader` but publishes as `@liiift-studio/sanity-font-manager`. `sanity-sales-portal` and `sanity-renewals-authorization` live in this repo and run in the test-studio, but are not yet published to npm — install them from source for now. `sanity-order-schema` is marked `private` and is intended for internal foundry use only.
+> **Notes on names & status.** The font manager directory is `sanity-font-uploader` but publishes as `@overpunch/sanity-font-manager`. `sanity-sales-portal` and `sanity-renewals-authorization` live in this repo and run in the test-studio, but are not yet published to npm — install them from source for now. `sanity-order-schema` is marked `private` and is intended for internal foundry use only.
 
 ---
 
@@ -73,10 +73,10 @@ Install only the package you need — each is independent:
 
 ```bash
 # Examples — pick the ones you want
-npm install @liiift-studio/sanity-advanced-reference-array
-npm install @liiift-studio/sanity-font-manager
-npm install @liiift-studio/sanity-bulk-data-operations
-npm install @liiift-studio/deploy-vercel-from-sanity
+npm install @overpunch/sanity-advanced-reference-array
+npm install @overpunch/sanity-font-manager
+npm install @overpunch/sanity-bulk-data-operations
+npm install @overpunch/deploy-vercel-from-sanity
 ```
 
 Then follow that package's own README for wiring. A few quickstarts:
@@ -84,7 +84,7 @@ Then follow that package's own README for wiring. A few quickstarts:
 ### Advanced reference array (input component)
 
 ```typescript
-import { AdvancedRefArray } from '@liiift-studio/sanity-advanced-reference-array';
+import { AdvancedRefArray } from '@overpunch/sanity-advanced-reference-array';
 
 export default {
 	name: 'myDocument',
@@ -106,7 +106,7 @@ export default {
 
 ```typescript
 import { defineConfig } from 'sanity';
-import { vercelDeploy } from '@liiift-studio/deploy-vercel-from-sanity';
+import { vercelDeploy } from '@overpunch/deploy-vercel-from-sanity';
 
 export default defineConfig({
 	// ...

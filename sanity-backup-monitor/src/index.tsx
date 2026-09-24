@@ -1,7 +1,7 @@
 // sanity-backup-monitor — Studio panel for backup health across foundry repos.
 
 import { definePlugin } from 'sanity'
-import { ClockIcon } from '@liiift-studio/sanity-ui-compat/icons'
+import { ClockIcon } from '@overpunch/sanity-ui-compat/icons'
 import { BackupTool } from './components/BackupTool'
 import { ConfigProvider, resolveConfig } from './config'
 import type { BackupMonitorConfig } from './types'
@@ -22,7 +22,7 @@ export type {
  *
  * @example
  * // sanity.config.ts
- * import { backupMonitor } from '@liiift-studio/sanity-backup-monitor'
+ * import { backupMonitor } from '@overpunch/sanity-backup-monitor'
  *
  * export default defineConfig({
  *   plugins: [

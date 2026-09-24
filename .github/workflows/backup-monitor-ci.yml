@@ -101,14 +101,14 @@ jobs:
         # caught it — the declarations lie. This probe would have.
         run: |
           node --input-type=module -e "
-            const compat = await import('@liiift-studio/sanity-ui-compat')
+            const compat = await import('@overpunch/sanity-ui-compat')
             const usable = v => typeof v === 'function' || (typeof v === 'object' && v !== null)
             const core = ['Box','Card','Flex','Text','Button','Badge','Spinner','Stack','Container']
             const missing = core.filter(n => !usable(compat[n]))
             if (missing.length) { console.error('Core primitives unresolved:', missing); process.exit(1) }
             if (!usable(compat.useToast)) { console.error('useToast unresolved'); process.exit(1) }
             if (!usable(compat.ToastViewport)) { console.error('ToastViewport unresolved — toasts would be silently discarded'); process.exit(1) }
-            const icons = await import('@liiift-studio/sanity-ui-compat/icons')
+            const icons = await import('@overpunch/sanity-ui-compat/icons')
             for (const n of ['RefreshIcon','SyncIcon','ClockIcon']) {
               if (!usable(icons[n])) { console.error('Icon unresolved:', n); process.exit(1) }
             }

@@ -1,6 +1,6 @@
-/** API route — backup proxy for @liiift-studio/sanity-backup-monitor (Pages Router). */
+/** API route — backup proxy for @overpunch/sanity-backup-monitor (Pages Router). */
 
-import { envFromProcess, handleRuns, handleTrigger } from '@liiift-studio/sanity-backup-monitor/proxy'
+import { envFromProcess, handleRuns, handleTrigger } from '@overpunch/sanity-backup-monitor/proxy'
 
 /** Header the Studio sends its shared key in. */
 const STATUS_KEY_HEADER = 'x-backup-status-key'

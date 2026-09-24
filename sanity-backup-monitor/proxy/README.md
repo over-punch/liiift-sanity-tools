@@ -58,7 +58,7 @@ a matching `statusKey`.
 
 `core.ts` is framework-agnostic — both Next.js files are thin adapters, and another
 framework needs only an equivalent one. It is also published as
-`@liiift-studio/sanity-backup-monitor/proxy` for importing directly.
+`@overpunch/sanity-backup-monitor/proxy` for importing directly.
 
 ## Endpoints
 

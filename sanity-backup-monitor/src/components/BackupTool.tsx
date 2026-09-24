@@ -1,6 +1,6 @@
 // Studio tool: backup health for every configured repository.
 
-import { Box, Card, Container, Flex, Stack, Text, ToastViewport } from '@liiift-studio/sanity-ui-compat'
+import { Box, Card, Container, Flex, Stack, Text, ToastViewport } from '@overpunch/sanity-ui-compat'
 import { useConfig } from '../config'
 import { TargetCard } from './TargetCard'
 import type { BackupTarget } from '../types'
