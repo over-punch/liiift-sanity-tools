@@ -4,7 +4,7 @@
   "description": "RETIRED — inlined into sites/darden/sanity/schemas/order.tsx. Do not publish.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Liiift-Studio/sanity-tools.git"
+    "url": "git+https://github.com/over-punch/sanity-tools.git"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

@@ -2,7 +2,7 @@
 
 ## Identity
 
-Monorepo of Sanity Studio plugins published under `@liiift-studio`. The primary active package is `sanity-font-manager` (in the `sanity-font-uploader/` subdirectory — name is historical).
+Monorepo of Sanity Studio plugins published under `@overpunch`. The primary active package is `sanity-font-manager` (in the `sanity-font-uploader/` subdirectory — name is historical).
 
 ## Scope
 
@@ -18,7 +18,7 @@ Develop and maintain reusable Sanity Studio UI components for type foundry CMS w
 - Peer deps only: `sanity`, `@sanity/ui`, `@sanity/icons`, `react` — no MUI or other heavy UI libs
 - fontWorker (TTF→WOFF2 conversion) stays server-side in each consumer site — not in this library
 - No Next.js patterns — these are Sanity plugins only
-- Publish to public npm under `@liiift-studio` org — OTP required
+- Publish to public npm under `@overpunch` org — OTP required
 
 ## Goals
 

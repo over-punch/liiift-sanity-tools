@@ -9,7 +9,7 @@ export type BackupMonitorMode = 'direct' | 'proxy'
 export interface BackupTarget {
 	/** Human label shown in the panel, e.g. "MCKL". */
 	label: string
-	/** GitHub owner, e.g. "Liiift-Studio". */
+	/** GitHub owner, e.g. "over-punch". */
 	owner: string
 	/** Repository name, e.g. "mckl-cms". */
 	repo: string

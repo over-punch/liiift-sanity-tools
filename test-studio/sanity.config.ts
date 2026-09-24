@@ -36,9 +36,9 @@ export default defineConfig({
 		backupMonitor({
 			token: process.env.SANITY_STUDIO_BACKUP_GH_TOKEN,
 			targets: [
-				{ label: 'MCKL', owner: 'Liiift-Studio', repo: 'mckl-cms', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
-				{ label: 'Darden', owner: 'Liiift-Studio', repo: 'Darden-Studio', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
-				{ label: 'TDF', owner: 'Liiift-Studio', repo: 'the-designers-foundry', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
+				{ label: 'MCKL', owner: 'over-punch', repo: 'mckl-cms', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
+				{ label: 'Darden', owner: 'over-punch', repo: 'Darden-Studio', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
+				{ label: 'TDF', owner: 'over-punch', repo: 'the-designers-foundry', workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
 			],
 		}),
 		structureTool(),

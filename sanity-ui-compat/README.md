@@ -377,7 +377,7 @@ deserving of test coverage.
 
 ## Who uses it
 
-18 packages in [`tools/sanity-tools`](https://github.com/Liiift-Studio/liiift-sanity-tools)
+18 packages in [`tools/sanity-tools`](https://github.com/over-punch/liiift-sanity-tools)
 take this as a dependency, including `sanity-font-uploader`, `sanity-typeface-seo`,
 `sanity-studio-version-badge`, `sanity-search-and-delete`, `sanity-detect-languages`
 and `sanity-advanced-reference-array`.
@@ -398,5 +398,5 @@ tombstones. Use it freely.
 Do note the API is still `0.x` and moves with the suite's needs; pin a version if that
 matters to you.
 
-**Repository:** [Liiift-Studio/liiift-sanity-tools](https://github.com/Liiift-Studio/liiift-sanity-tools)
+**Repository:** [over-punch/liiift-sanity-tools](https://github.com/over-punch/liiift-sanity-tools)
 · package path `sanity-ui-compat/`

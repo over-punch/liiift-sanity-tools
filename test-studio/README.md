@@ -269,7 +269,7 @@ A successful test session should verify:
 
 ## 🔗 **Related Resources**
 
-- **Main Repository**: [Liiift Sanity Tools](https://github.com/Liiift-Studio/liiift-sanity-tools)
+- **Main Repository**: [Liiift Sanity Tools](https://github.com/over-punch/liiift-sanity-tools)
 - **Individual Tool Documentation**: See each tool's README
 - **Sanity Documentation**: [sanity.io/docs](https://sanity.io/docs)
 

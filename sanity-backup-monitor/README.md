@@ -26,7 +26,7 @@ export default defineConfig({
       targets: [
         {
           label: 'MCKL',
-          owner: 'Liiift-Studio',
+          owner: 'over-punch',
           repo: 'mckl-cms',
           workflow: 'backup-routine.yml',
           expectedIntervalDays: 7,
