@@ -8,9 +8,9 @@ const baseEnv: ProxyEnv = { githubToken: 't', targets: {} }
 
 describe('parseTargets', () => {
 	it('parses a single target with a default ref', () => {
-		const t = parseTargets('mckl:Liiift-Studio/mckl-cms/backup-routine.yml')
+		const t = parseTargets('mckl:over-punch/mckl-cms/backup-routine.yml')
 		expect(t.mckl).toEqual({
-			owner: 'Liiift-Studio', repo: 'mckl-cms', workflow: 'backup-routine.yml', ref: 'main',
+			owner: 'over-punch', repo: 'mckl-cms', workflow: 'backup-routine.yml', ref: 'main',
 		})
 	})
 

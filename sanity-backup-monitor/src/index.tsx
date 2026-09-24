@@ -30,7 +30,7 @@ export type {
  *       proxyUrl: 'https://ops.example.com/api/backup-proxy',
  *       statusKey: process.env.SANITY_STUDIO_BACKUP_STATUS_KEY,
  *       targets: [
- *         { label: 'MCKL', owner: 'Liiift-Studio', repo: 'mckl-cms',
+ *         { label: 'MCKL', owner: 'over-punch', repo: 'mckl-cms',
  *           workflow: 'backup-routine.yml', expectedIntervalDays: 7 },
  *       ],
  *     }),

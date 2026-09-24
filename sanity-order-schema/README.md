@@ -30,6 +30,6 @@ project, and nobody is asking for it.
 
 `1.2.0` was published to the public npm registry on 2026-08-13 and has been unpublished. It should
 not be republished. Findings from the review that prompted this are tracked in
-`Liiift-Studio/liiift-sanity-tools` and `Liiift-Studio/Darden-Studio` under the `deep-review` label.
+`over-punch/liiift-sanity-tools` and `over-punch/Darden-Studio` under the `deep-review` label.
 
 The source is kept here for history only.

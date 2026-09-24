@@ -137,7 +137,7 @@ export async function handleTrigger(
  * and defaults to main.
  *
  * @example
- * "mckl:Liiift-Studio/mckl-cms/backup-routine.yml,darden:Liiift-Studio/Darden-Studio/backup-routine.yml"
+ * "mckl:over-punch/mckl-cms/backup-routine.yml,darden:over-punch/Darden-Studio/backup-routine.yml"
  */
 export function parseTargets(spec: string | undefined): Record<string, ProxyTarget> {
 	const out: Record<string, ProxyTarget> = {}

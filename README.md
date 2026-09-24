@@ -1,6 +1,6 @@
 # Liiift Sanity Tools
 
-**A suite of independently-published plugins, inputs, and utilities for Sanity Studio** — built from real production type-foundry studios and shared as open-source packages on npm under the [`@liiift-studio`](https://www.npmjs.com/org/liiift-studio) scope.
+**A suite of independently-published plugins, inputs, and utilities for Sanity Studio** — built from real production type-foundry studios and shared as open-source packages on npm under the [`@overpunch`](https://www.npmjs.com/org/overpunch) scope.
 
 Each tool lives in its own subdirectory with its own `package.json`, README, and release cadence. This repository is the **front door**: it advertises the whole family, links to every package, and hosts the shared [`test-studio`](#shared-dev-workflow) used to develop and verify them together.
 
@@ -13,7 +13,7 @@ Each tool lives in its own subdirectory with its own `package.json`, README, and
 Every package is a standalone plugin or component that mounts into a Sanity Studio. Most target Sanity v3, and several also support v4 / v5 — each package declares its own `sanity` peer range, so confirm per package. They group into four families — data operations, studio inputs & UI, the type-foundry domain, and commerce & ops — and all share the local `test-studio` harness for development.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Liiift-Studio/liiift-sanity-tools/main/assets/ecosystem.svg?v=1" alt="Diagram: Sanity Studio at the centre with four groups of Liiift Sanity Tools plugins — Data operations, Studio inputs & UI, Type-foundry domain, and Commerce & ops — plus the shared test-studio dev harness that mounts every plugin." width="900">
+  <img src="https://raw.githubusercontent.com/over-punch/liiift-sanity-tools/main/assets/ecosystem.svg?v=1" alt="Diagram: Sanity Studio at the centre with four groups of Liiift Sanity Tools plugins — Data operations, Studio inputs & UI, Type-foundry domain, and Commerce & ops — plus the shared test-studio dev harness that mounts every plugin." width="900">
 </p>
 
 ---
@@ -41,7 +41,7 @@ Most `@overpunch/*` packages below are **published on npm** (the table notes the
 | [`@overpunch/sanity-advanced-reference-array`](./sanity-advanced-reference-array) | Reference array component with search, sort, and bulk operations |
 | [`@overpunch/sanity-key-value-input`](./sanity-key-value-input) | Input component for ordered key-value string-pair editing |
 | [`@overpunch/sanity-nested-object-selector`](./sanity-nested-object-selector) | Searchable checkbox selector for nested objects within documents |
-| [`@overpunch/sanity-studio-version-badge`](./sanity-studio-version-badge) | Shows installed `@liiift-studio` package versions in a badge on the structure root |
+| [`@overpunch/sanity-studio-version-badge`](./sanity-studio-version-badge) | Shows installed `@overpunch` package versions in a badge on the structure root |
 
 ### Type-foundry domain
 
@@ -162,7 +162,7 @@ Contributions are welcome. Because each tool is its own package (most are separa
 
 ```bash
 # Clone with all submodules populated
-git clone --recurse-submodules https://github.com/Liiift-Studio/liiift-sanity-tools.git
+git clone --recurse-submodules https://github.com/over-punch/liiift-sanity-tools.git
 cd liiift-sanity-tools
 
 # Or, if already cloned without submodules:
@@ -188,9 +188,9 @@ cd test-studio && npm install && npm run dev
 
 ## Links & resources
 
-- **This repository:** [Liiift-Studio/liiift-sanity-tools](https://github.com/Liiift-Studio/liiift-sanity-tools)
-- **npm org:** [`@liiift-studio`](https://www.npmjs.com/org/liiift-studio)
-- **Organization:** [Liiift Studio](https://github.com/Liiift-Studio)
+- **This repository:** [over-punch/liiift-sanity-tools](https://github.com/over-punch/liiift-sanity-tools)
+- **npm org:** [`@overpunch`](https://www.npmjs.com/org/overpunch)
+- **Organization:** [Liiift Studio](https://github.com/over-punch)
 - **Sanity.io:** [Official website](https://www.sanity.io/) · [Community Slack](https://slack.sanity.io/)
 
 ## License

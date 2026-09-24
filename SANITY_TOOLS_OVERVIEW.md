@@ -1,6 +1,6 @@
 # Liiift Sanity Tools — Monorepo Overview
 
-This is the `Liiift-Studio/liiift-sanity-tools` monorepo. Each subdirectory is an independent npm package with its own `package.json`. There is no shared root install — always `cd` into the specific package directory to run commands.
+This is the `over-punch/liiift-sanity-tools` monorepo. Each subdirectory is an independent npm package with its own `package.json`. There is no shared root install — always `cd` into the specific package directory to run commands.
 
 ---
 

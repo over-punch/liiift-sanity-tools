@@ -1,63 +1,63 @@
 [submodule "sanity-advanced-reference-array"]
 	path = sanity-advanced-reference-array
-	url = https://github.com/Liiift-Studio/sanity-advanced-reference-array.git
+	url = https://github.com/over-punch/sanity-advanced-reference-array.git
 [submodule "sanity-bulk-data-operations"]
 	path = sanity-bulk-data-operations
-	url = https://github.com/Liiift-Studio/sanity-bulk-data-operations.git
+	url = https://github.com/over-punch/sanity-bulk-data-operations.git
 [submodule "sanity-convert-ids-to-slugs"]
 	path = sanity-convert-ids-to-slugs
-	url = https://github.com/Liiift-Studio/sanity-convert-ids-to-slugs.git
+	url = https://github.com/over-punch/sanity-convert-ids-to-slugs.git
 [submodule "sanity-convert-references"]
 	path = sanity-convert-references
-	url = https://github.com/Liiift-Studio/sanity-convert-references.git
+	url = https://github.com/over-punch/sanity-convert-references.git
 [submodule "sanity-delete-unused-assets"]
 	path = sanity-delete-unused-assets
-	url = https://github.com/Liiift-Studio/sanity-delete-unused-assets.git
+	url = https://github.com/over-punch/sanity-delete-unused-assets.git
 [submodule "sanity-duplicate-and-rename"]
 	path = sanity-duplicate-and-rename
-	url = https://github.com/Liiift-Studio/sanity-duplicate-and-rename.git
+	url = https://github.com/over-punch/sanity-duplicate-and-rename.git
 [submodule "sanity-enhanced-commerce"]
 	path = sanity-enhanced-commerce
 	url = https://github.com/quitequinn/sanity-enhanced-commerce.git
 [submodule "sanity-export-data"]
 	path = sanity-export-data
-	url = https://github.com/Liiift-Studio/sanity-export-data.git
+	url = https://github.com/over-punch/sanity-export-data.git
 [submodule "sanity-font-data-extractor"]
 	path = sanity-font-data-extractor
-	url = https://github.com/Liiift-Studio/sanity-font-data-extractor.git
+	url = https://github.com/over-punch/sanity-font-data-extractor.git
 [submodule "sanity-renewals-authorization"]
 	path = sanity-renewals-authorization
-	url = https://github.com/Liiift-Studio/sanity-renewals-authorization.git
+	url = https://github.com/over-punch/sanity-renewals-authorization.git
 [submodule "sanity-search-and-delete"]
 	path = sanity-search-and-delete
-	url = https://github.com/Liiift-Studio/sanity-search-and-delete.git
+	url = https://github.com/over-punch/sanity-search-and-delete.git
 [submodule "sanity-sales-portal"]
 	path = sanity-sales-portal
-	url = https://github.com/Liiift-Studio/sanity-sales-portal.git
+	url = https://github.com/over-punch/sanity-sales-portal.git
 [submodule "deploy-vercel-from-sanity"]
 	path = deploy-vercel-from-sanity
-	url = https://github.com/Liiift-Studio/Deploy-Vercel-from-Sanity.git
+	url = https://github.com/over-punch/Deploy-Vercel-from-Sanity.git
 [submodule "sanity-type-foundry-utilities"]
 	path = sanity-type-foundry-utilities
-	url = https://github.com/Liiift-Studio/sanity-type-foundry-utilities.git
+	url = https://github.com/over-punch/sanity-type-foundry-utilities.git
 [submodule "sanity-foundry-constants"]
 	path = sanity-foundry-constants
-	url = https://github.com/Liiift-Studio/sanity-foundry-constants.git
+	url = https://github.com/over-punch/sanity-foundry-constants.git
 [submodule "sanity-key-value-input"]
 	path = sanity-key-value-input
-	url = https://github.com/Liiift-Studio/sanity-key-value-input.git
+	url = https://github.com/over-punch/sanity-key-value-input.git
 [submodule "sanity-nested-object-selector"]
 	path = sanity-nested-object-selector
-	url = https://github.com/Liiift-Studio/sanity-nested-object-selector.git
+	url = https://github.com/over-punch/sanity-nested-object-selector.git
 [submodule "sanity-studio-version-badge"]
 	path = sanity-studio-version-badge
-	url = https://github.com/Liiift-Studio/sanity-studio-version-badge.git
+	url = https://github.com/over-punch/sanity-studio-version-badge.git
 [submodule "sanity-typeface-fields"]
 	path = sanity-typeface-fields
-	url = https://github.com/Liiift-Studio/sanity-typeface-fields.git
+	url = https://github.com/over-punch/sanity-typeface-fields.git
 [submodule "sanity-typeface-seo"]
 	path = sanity-typeface-seo
-	url = https://github.com/Liiift-Studio/sanity-typeface-seo.git
+	url = https://github.com/over-punch/sanity-typeface-seo.git
 [submodule "sanity-font-uploader"]
 	path = sanity-font-uploader
-	url = https://github.com/Liiift-Studio/sanity-font-manager.git
+	url = https://github.com/over-punch/sanity-font-manager.git

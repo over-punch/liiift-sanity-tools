@@ -15,7 +15,7 @@ Each repo has two remotes:
 
 If a repo is missing the `deploy` remote, add it:
 ```bash
-git remote add deploy git@github-liiift:Liiift-Studio/<repo-name>.git
+git remote add deploy git@github-liiift:over-punch/<repo-name>.git
 ```
 
 ## Steps
