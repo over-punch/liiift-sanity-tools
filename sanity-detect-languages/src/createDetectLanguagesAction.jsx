@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useClient, useDocumentOperation } from 'sanity';
-import { useToast } from '@liiift-studio/sanity-ui-compat';
+import { useToast } from '@overpunch/sanity-ui-compat';
 import { resolveLanguages, buildLanguagePatch } from './resolveLanguages.js';
 import { hyperglotMeta } from './detect.js';
 

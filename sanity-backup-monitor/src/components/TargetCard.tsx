@@ -1,8 +1,8 @@
 // One repository's backup health, written for editors, with detail on request.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Box, Button, Card, Flex, Spinner, Stack, Text, useToast } from '@liiift-studio/sanity-ui-compat'
-import { ChevronDownIcon, ChevronRightIcon, RefreshIcon, SyncIcon } from '@liiift-studio/sanity-ui-compat/icons'
+import { Box, Button, Card, Flex, Spinner, Stack, Text, useToast } from '@overpunch/sanity-ui-compat'
+import { ChevronDownIcon, ChevronRightIcon, RefreshIcon, SyncIcon } from '@overpunch/sanity-ui-compat/icons'
 import { assessHealth, DEFAULT_INTERVAL_DAYS } from '../lib/health'
 import { plainEvent, plainOutcome, plainSummary } from '../lib/plainLanguage'
 import { fetchRuns, fetchState, triggerBackup } from '../lib/transport'

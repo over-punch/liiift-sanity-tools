@@ -10,7 +10,7 @@ Develop and maintain reusable Sanity Studio UI components for type foundry CMS w
 
 ## Primary package
 
-`@liiift-studio/sanity-font-manager` — consumed by Darden, TDF, and MCKL Sanity Studios.
+`@overpunch/sanity-font-manager` — consumed by Darden, TDF, and MCKL Sanity Studios.
 
 ## Constraints
 

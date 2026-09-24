@@ -1,6 +1,6 @@
-# @liiift-studio/sanity-ui-compat
+# @overpunch/sanity-ui-compat
 
-[![npm](https://img.shields.io/npm/v/@liiift-studio/sanity-ui-compat?color=cb3837&label=npm)](https://www.npmjs.com/package/@liiift-studio/sanity-ui-compat)
+[![npm](https://img.shields.io/npm/v/@overpunch/sanity-ui-compat?color=cb3837&label=npm)](https://www.npmjs.com/package/@overpunch/sanity-ui-compat)
 [![Sanity Studio](https://img.shields.io/badge/Sanity%20Studio-v3%20%C2%B7%20v4%20%C2%B7%20v5%20%C2%B7%20v6-f03e2f)](#compatibility)
 [![@sanity/ui](https://img.shields.io/badge/%40sanity%2Fui-2%20%C2%B7%203%20%C2%B7%204-blue)](#compatibility)
 [![runtime deps](https://img.shields.io/badge/runtime%20deps-0-brightgreen)](#compatibility)
@@ -9,7 +9,7 @@
 Version-agnostic access to `@sanity/ui` and `@sanity/icons` across Sanity Studio v3–v6.
 
 **One import, one prop spelling, four Studio majors.** Write
-`import { Stack, Tooltip } from '@liiift-studio/sanity-ui-compat'` once and the same
+`import { Stack, Tooltip } from '@overpunch/sanity-ui-compat'` once and the same
 plugin build loads in a Sanity 3 Studio and a Sanity 6 Studio — no version detection
 at your call sites, no `@sanity/ui` in your bundle, no peer-range gymnastics.
 
@@ -21,7 +21,7 @@ single build. **18 packages in the suite depend on it.**
 ## Install
 
 ```bash
-npm install @liiift-studio/sanity-ui-compat
+npm install @overpunch/sanity-ui-compat
 ```
 
 Take it as a plain **`dependency`**, not a `peerDependency` — see [Usage](#usage) for why.
@@ -98,7 +98,7 @@ stylistic choice; it is the only shape that links across v2 → v4.
 
 ```mermaid
 flowchart TD
-    P["Your plugin<br/>imports Stack, Tooltip, TrashIcon …<br/>from @liiift-studio/sanity-ui-compat"]
+    P["Your plugin<br/>imports Stack, Tooltip, TrashIcon …<br/>from @overpunch/sanity-ui-compat"]
     P --> R
 
     R{"sanity-ui-compat<br/>reads the INSTALLED namespace at runtime<br/>import * as UI from '@sanity/ui'<br/>then looks up each name on it"}
@@ -140,8 +140,8 @@ Three things follow from this shape, and they are the whole design:
 ## Usage
 
 ```ts
-import { Stack, Card, Tooltip, MenuButton, useToast } from '@liiift-studio/sanity-ui-compat'
-import { TrashIcon, UploadIcon } from '@liiift-studio/sanity-ui-compat/icons'
+import { Stack, Card, Tooltip, MenuButton, useToast } from '@overpunch/sanity-ui-compat'
+import { TrashIcon, UploadIcon } from '@overpunch/sanity-ui-compat/icons'
 ```
 
 Take it as a plain **`dependency`**, not a `peerDependency`. It never bundles
@@ -155,8 +155,8 @@ because a sibling moved.
 import {
   Stack, Card, Flex, Text, Button, Tooltip, Progress,
   ActionMenu, ToastViewport, useToast,
-} from '@liiift-studio/sanity-ui-compat'
-import { RocketIcon, TrashIcon, EllipsisVerticalIcon } from '@liiift-studio/sanity-ui-compat/icons'
+} from '@overpunch/sanity-ui-compat'
+import { RocketIcon, TrashIcon, EllipsisVerticalIcon } from '@overpunch/sanity-ui-compat/icons'
 
 export function MyTool() {
   const toast = useToast()
@@ -235,8 +235,8 @@ forking or importing `@sanity/ui` directly — a direct named import is exactly 
 breaks on v4:
 
 ```ts
-import { UI, resolveComponent } from '@liiift-studio/sanity-ui-compat'
-import { resolveIcon } from '@liiift-studio/sanity-ui-compat/icons'
+import { UI, resolveComponent } from '@overpunch/sanity-ui-compat'
+import { resolveIcon } from '@overpunch/sanity-ui-compat/icons'
 
 const Popover = resolveComponent(UI, 'Popover')      // undefined on v4
 const PinIcon = resolveIcon('PinIcon', 'pin')        // named on v3, symbol on v5

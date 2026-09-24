@@ -1,5 +1,5 @@
 {
-	"name": "@liiift-studio/sanity-backup-monitor",
+	"name": "@overpunch/sanity-backup-monitor",
 	"version": "2.3.3",
 	"description": "Sanity Studio panel showing backup health across foundry repos, with on-demand triggering",
 	"license": "UNLICENSED",
@@ -35,7 +35,7 @@
 		"prepublishOnly": "npm run typecheck && npm test && npm run build"
 	},
 	"dependencies": {
-		"@liiift-studio/sanity-ui-compat": "^0.1.4"
+		"@overpunch/sanity-ui-compat": "^0.1.4"
 	},
 	"peerDependencies": {
 		"@sanity/icons": ">=2 <6",

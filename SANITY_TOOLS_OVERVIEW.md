@@ -6,9 +6,9 @@ This is the `Liiift-Studio/liiift-sanity-tools` monorepo. Each subdirectory is a
 
 ## Published Packages
 
-These packages are on npm under `@liiift-studio/` and are actively consumed by foundry sites.
+These packages are on npm under `@overpunch/` and are actively consumed by foundry sites.
 
-### `sanity-font-uploader/` → `@liiift-studio/sanity-font-manager`
+### `sanity-font-uploader/` → `@overpunch/sanity-font-manager`
 
 The main font management suite for Sanity Studio. Consumed by Darden, TDF, and MCKL.
 
@@ -20,7 +20,7 @@ Re-exports `SCRIPTS`, `SCRIPTS_OBJECT`, `HtmlDescription`, `DISCOUNT_REQUIREMENT
 
 ---
 
-### `sanity-foundry-constants/` → `@liiift-studio/sanity-foundry-constants`
+### `sanity-foundry-constants/` → `@overpunch/sanity-foundry-constants`
 
 Environment-driven constants shared across all foundry Sanity studios.
 
@@ -30,7 +30,7 @@ All values are read from environment variables at runtime (`SANITY_STUDIO_SCRIPT
 
 ---
 
-### `sanity-key-value-input/` → `@liiift-studio/sanity-key-value-input`
+### `sanity-key-value-input/` → `@overpunch/sanity-key-value-input`
 
 Standalone Sanity input component for ordered key→value string pair editing.
 
@@ -40,7 +40,7 @@ Use as `components: { input: KeyValueInput }` on any Sanity array field with ite
 
 ---
 
-### `sanity-nested-object-selector/` → `@liiift-studio/sanity-nested-object-selector`
+### `sanity-nested-object-selector/` → `@overpunch/sanity-nested-object-selector`
 
 Searchable checkbox selector for items fetched from nested arrays inside Sanity documents. Configured entirely via schema `options`.
 
@@ -52,11 +52,11 @@ Schema options: `sourceType`, `nestedField`, `titleField`, `valueField`, `filter
 
 ### `sanity-advanced-reference-array/` → `sanity-advanced-reference-array`
 
-Advanced reference array field with enhanced UI. A peer dependency of `@liiift-studio/sanity-font-manager`.
+Advanced reference array field with enhanced UI. A peer dependency of `@overpunch/sanity-font-manager`.
 
 ---
 
-### `sanity-type-foundry-utilities/` → `@liiift-studio/sanity-type-foundry-utilities`
+### `sanity-type-foundry-utilities/` → `@overpunch/sanity-type-foundry-utilities`
 
 Admin tools bundled into a `UtilitiesDesk` for Sanity Studio. **Consumed by Positype and Sorkin — not by Darden, TDF, or MCKL.**
 
@@ -64,7 +64,7 @@ Bundles: ConvertIds, DeleteUnused, ExportData, SearchAndDelete, DuplicateAndRena
 
 ---
 
-### `sanity-sales-portal/` → `@liiift-studio/sales-portal`
+### `sanity-sales-portal/` → `@overpunch/sales-portal`
 
 Sales portal integration for Sanity Studio. Consumed by multiple foundry sites.
 
@@ -103,12 +103,12 @@ These packages exist as standalone directories and can be used independently, bu
 ## Package Relationships
 
 ```
-@liiift-studio/sanity-font-manager
+@overpunch/sanity-font-manager
   ├── peer: sanity-advanced-reference-array (optional)
   └── re-exports: sanity-foundry-constants, sanity-key-value-input, sanity-nested-object-selector
       (for backward compat — consumers should import from dedicated packages directly)
 
-@liiift-studio/sanity-type-foundry-utilities
+@overpunch/sanity-type-foundry-utilities
   └── bundles: bulk-data-operations, convert-ids-to-slugs, convert-references,
                delete-unused-assets, duplicate-and-rename, export-data,
                search-and-delete, font-data-extractor
@@ -120,13 +120,13 @@ These packages exist as standalone directories and can be used independently, bu
 
 | Package | Darden | TDF | MCKL | Positype | Sorkin |
 |---|---|---|---|---|---|
-| `@liiift-studio/sanity-font-manager` | ✅ | ✅ | ✅ | — | — |
-| `@liiift-studio/sanity-foundry-constants` | ✅ | ✅ | ✅ | — | — |
-| `@liiift-studio/sanity-key-value-input` | ✅ | ✅ | ✅ | — | — |
-| `@liiift-studio/sanity-nested-object-selector` | — | ✅ | — | — | — |
+| `@overpunch/sanity-font-manager` | ✅ | ✅ | ✅ | — | — |
+| `@overpunch/sanity-foundry-constants` | ✅ | ✅ | ✅ | — | — |
+| `@overpunch/sanity-key-value-input` | ✅ | ✅ | ✅ | — | — |
+| `@overpunch/sanity-nested-object-selector` | — | ✅ | — | — | — |
 | `sanity-advanced-reference-array` | ✅ | ✅ | ✅ | — | — |
-| `@liiift-studio/sanity-type-foundry-utilities` | — | — | — | ✅ | ✅ |
-| `@liiift-studio/sales-portal` | — | — | — | ✅ | ✅ |
+| `@overpunch/sanity-type-foundry-utilities` | — | — | — | ✅ | ✅ |
+| `@overpunch/sales-portal` | — | — | — | ✅ | ✅ |
 
 ---
 

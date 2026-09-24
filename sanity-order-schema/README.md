@@ -1,4 +1,4 @@
-# @liiift-studio/sanity-order-schema — RETIRED
+# @overpunch/sanity-order-schema — RETIRED
 
 **This package is retired. Do not use it, and do not publish it.**
 

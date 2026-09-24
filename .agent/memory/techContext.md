@@ -2,7 +2,7 @@
 
 ## Package
 
-- **Published name:** `@liiift-studio/sanity-font-manager`
+- **Published name:** `@overpunch/sanity-font-manager`
 - **Directory:** `sanity-font-uploader/` (historical name)
 - **Version:** 2.3.2
 - **Package manager:** npm

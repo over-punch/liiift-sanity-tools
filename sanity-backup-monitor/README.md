@@ -1,4 +1,4 @@
-# @liiift-studio/sanity-backup-monitor
+# @overpunch/sanity-backup-monitor
 
 Studio panel showing whether your scheduled dataset backups are actually running.
 
@@ -12,12 +12,12 @@ editors already are, and colours the card when a backup is overdue or failing.
 ## Install
 
 ```bash
-npm i @liiift-studio/sanity-backup-monitor
+npm i @overpunch/sanity-backup-monitor
 ```
 
 ```ts
 // sanity.config.ts
-import { backupMonitor } from '@liiift-studio/sanity-backup-monitor'
+import { backupMonitor } from '@overpunch/sanity-backup-monitor'
 
 export default defineConfig({
   plugins: [
