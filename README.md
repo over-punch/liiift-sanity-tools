@@ -208,4 +208,4 @@ This suite grew out of months of development and real-world usage across multipl
 
 ---
 
-**Made with care for the Sanity community by [Liiift Studio](https://liiift.studio).**
+**Made with care for the Sanity community by [Liiift Studio](https://overpunch.ca).**
