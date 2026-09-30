@@ -32,6 +32,11 @@
       "Bash(kill -9 *)",
       "Bash(shutdown *)",
       "Bash(reboot *)"
-    ],
+    ]
+  },
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
   }
 }
