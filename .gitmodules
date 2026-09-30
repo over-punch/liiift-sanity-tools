@@ -64,3 +64,12 @@
 [submodule "sanity-visitor-insights"]
 	path = sanity-visitor-insights
 	url = https://github.com/over-punch/sanity-visitor-insights.git
+[submodule "sanity-ui-compat"]
+	path = sanity-ui-compat
+	url = https://github.com/over-punch/sanity-ui-compat.git
+[submodule "sanity-detect-languages"]
+	path = sanity-detect-languages
+	url = https://github.com/over-punch/sanity-detect-languages.git
+[submodule "sanity-backup-monitor"]
+	path = sanity-backup-monitor
+	url = https://github.com/over-punch/sanity-backup-monitor.git
