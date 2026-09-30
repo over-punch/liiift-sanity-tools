@@ -40,7 +40,7 @@ For the repo being deployed:
 3. Commit as the Liiift account with message: `v{new_version}`
 
 ```bash
-git -c user.name="Liiift" -c user.email="hello@liiift.studio" commit -m "v{new_version}"
+git -c user.name="Liiift" -c user.email="hello@overpunch.ca" commit -m "v{new_version}"
 ```
 
 ### 4. Push to Deploy Remote
